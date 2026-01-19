@@ -4,6 +4,7 @@ export * from './core/HSG';
 export * from './core/HSGs';
 export * from './core/DataExtractor';
 export * from './core/Source';
+export * from './data';
 export * from './thermo';
 export * from './reactions';
 export * from './app';

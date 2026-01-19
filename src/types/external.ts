@@ -1,9 +1,38 @@
-import { Component, Temperature } from './models';
-import { NASARangeType } from './constants';
+import { Component, NASA7Coefficients, NASA9Coefficients, Temperature } from './models';
+import { ComponentKey, NASARangeType } from './constants';
 
 export interface TableEquation {
   parms_values: Record<string, number>;
 }
+
+interface NASABaseData {
+  Name: string;
+  Formula: string;
+  State: string;
+  formula_raw: string;
+  phase_flag: number;
+  MW: number;
+  EnFo_IG: number;
+  dEnFo_IG_298: number;
+  Tmin: number;
+  Tmax: number;
+}
+
+export interface NASA9TemperatureRangeData extends NASABaseData, NASA9Coefficients {
+  nasa9_200_1000_K?: 1;
+  nasa9_1000_6000_K?: 1;
+  nasa9_6000_20000_K?: 1;
+}
+
+export interface NASA7TemperatureRangeData extends NASABaseData, NASA7Coefficients {
+  nasa7_200_1000_K?: 1;
+  nasa7_1000_6000_K?: 1;
+  nasa7_6000_20000_K?: 1;
+}
+
+export type TemperatureRangeData = NASA7TemperatureRangeData | NASA9TemperatureRangeData;
+
+export type CompoundTemperatureRanges = Partial<Record<NASARangeType, TemperatureRangeData>>;
 
 export interface ComponentEquationSource {
   component: Component;
@@ -14,15 +43,12 @@ export interface ComponentEquationSource {
 export interface Source {
   getEquationSource?: (args: {
     component: Component;
-    componentKey: string;
+    componentKey: ComponentKey | string;
     propName: NASARangeType;
   }) => ComponentEquationSource | null | undefined;
 }
 
-export interface ModelSource {
-  // Placeholder for future concrete shape
-  [key: string]: unknown;
-}
+export type ModelSource = Record<string, CompoundTemperatureRanges>;
 
 export interface Reaction {
   available_components: Component[];

@@ -8,7 +8,7 @@ export type NASARangeType =
   | 'nasa9_6000_20000_K';
 
 export type BasisType = 'molar' | 'mass';
-export type ComponentKey = 'Name-Formula' | 'Formula-State' | 'Name';
+export type ComponentKey = 'Name-State' | 'Formula-State' | 'Name-Formula';
 export type StateType = 'g' | 'l' | 's' | 'cr';
 
 // Universal constants (placeholders; update when data available)

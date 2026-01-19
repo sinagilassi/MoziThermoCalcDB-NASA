@@ -6,11 +6,13 @@ import { ComponentKey } from '../types/constants';
  */
 export function setComponentId(opts: { component: Component; componentKey: ComponentKey }): string {
   const { component, componentKey } = opts;
-  if (componentKey === 'Name-Formula') {
-    return `${component.name}-${component.formula}`;
+  switch (componentKey) {
+    case 'Name-Formula':
+      return `${component.name}-${component.formula}`;
+    case 'Formula-State':
+      return `${component.formula}-${component.state}`;
+    case 'Name-State':
+    default:
+      return `${component.name}-${component.state}`;
   }
-  if (componentKey === 'Formula-State') {
-    return `${component.formula}-${component.state}`;
-  }
-  return component.name;
 }

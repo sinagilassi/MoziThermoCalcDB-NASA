@@ -1,0 +1,148 @@
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { parse } from 'csv-parse/sync';
+import { ComponentKey, NASARangeType, StateType } from '../types/constants';
+import { CompoundTemperatureRanges, ModelSource, NASA9TemperatureRangeData } from '../types/external';
+import { setComponentId } from '../utils/component';
+import { Component } from '../types/models';
+
+type RawCSVRow = Record<string, string>;
+export type RangeFile = { path: string; range: NASARangeType };
+
+function toNumber(value: string | number | undefined): number | null {
+  const num = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(num) ? num : null;
+}
+
+function buildComponent(data: NASA9TemperatureRangeData): Component {
+  return {
+    name: data.Name,
+    formula: data.Formula,
+    state: data.State as StateType
+  };
+}
+
+export class DataLoader {
+  constructor(private readonly rangeFiles: RangeFile[]) {
+    if (!rangeFiles.length) {
+      throw new Error('DataLoader requires at least one CSV path; data must be supplied externally.');
+    }
+  }
+
+  async loadModelSource(): Promise<ModelSource> {
+    const modelSource: ModelSource = {};
+
+    for (const { path: filePath, range } of this.rangeFiles) {
+      const rows = await this.parseCSV(filePath);
+      for (const row of rows) {
+        const transformed = this.transformRow(row, range);
+        if (!transformed) continue;
+
+        const keys = this.generateKeys(transformed);
+        for (const key of keys) {
+          if (!modelSource[key]) {
+            modelSource[key] = {} as CompoundTemperatureRanges;
+          }
+          modelSource[key][range] = transformed;
+        }
+      }
+    }
+
+    return modelSource;
+  }
+
+  private async parseCSV(filePath: string): Promise<RawCSVRow[]> {
+    const file = await fs.readFile(filePath, 'utf-8');
+    return parse(file, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true
+    }) as RawCSVRow[];
+  }
+
+  private transformRow(row: RawCSVRow, range: NASARangeType): NASA9TemperatureRangeData | null {
+    const phase_flag = toNumber(row.phase_flag) ?? 0;
+    const MW = toNumber(row.mw);
+    const EnFo_IG = toNumber(row.hf298);
+    const Tmin = toNumber(row.T_low);
+    const Tmax = toNumber(row.T_high);
+    const dEnFo_IG_298 = toNumber(row.dh298_0);
+    const a1 = toNumber(row.a1);
+    const a2 = toNumber(row.a2);
+    const a3 = toNumber(row.a3);
+    const a4 = toNumber(row.a4);
+    const a5 = toNumber(row.a5);
+    const a6 = toNumber(row.a6);
+    const a7 = toNumber(row.a7);
+    const b1 = toNumber(row.b1);
+    const b2 = toNumber(row.b2);
+
+    if (
+      !row.name ||
+      !row.formula ||
+      !row.state ||
+      MW === null ||
+      EnFo_IG === null ||
+      Tmin === null ||
+      Tmax === null ||
+      a1 === null ||
+      a2 === null ||
+      a3 === null ||
+      a4 === null ||
+      a5 === null ||
+      a6 === null ||
+      a7 === null ||
+      b1 === null ||
+      b2 === null
+    ) {
+      return null;
+    }
+
+    return {
+      Name: row.name.trim(),
+      Formula: row.formula.trim(),
+      State: row.state.trim(),
+      formula_raw: row.formula_raw ?? '',
+      phase_flag,
+      MW,
+      EnFo_IG,
+      Tmin,
+      Tmax,
+      dEnFo_IG_298: dEnFo_IG_298 ?? 0,
+      a1,
+      a2,
+      a3,
+      a4,
+      a5,
+      a6,
+      a7,
+      b1,
+      b2,
+      [range]: 1
+    };
+  }
+
+  private generateKeys(data: NASA9TemperatureRangeData): string[] {
+    const component = buildComponent(data);
+    const keys: ComponentKey[] = ['Name-State', 'Formula-State', 'Name-Formula'];
+    return keys.map((componentKey) => setComponentId({ component, componentKey }));
+  }
+}
+
+export async function loadModelSource(dataDir?: string): Promise<ModelSource> {
+  if (!dataDir) {
+    throw new Error('loadModelSource requires a data directory path; CSVs are not bundled with the package.');
+  }
+  const rangeFiles: RangeFile[] = [
+    { path: path.join(dataDir, 'gas_nasa9_coeffs_min_0_max_1000.csv'), range: 'nasa9_200_1000_K' },
+    { path: path.join(dataDir, 'gas_nasa9_coeffs_min_1000_max_6000.csv'), range: 'nasa9_1000_6000_K' },
+    { path: path.join(dataDir, 'gas_nasa9_coeffs_min_6000_max_20000.csv'), range: 'nasa9_6000_20000_K' }
+  ];
+  const loader = new DataLoader(rangeFiles);
+  return loader.loadModelSource();
+}
+
+export async function loadModelSourceFromFiles(rangeFiles: RangeFile[]): Promise<ModelSource> {
+  const loader = new DataLoader(rangeFiles);
+  return loader.loadModelSource();
+}
