@@ -1,4 +1,5 @@
 import { Component } from '../types/models';
+import { Reaction } from '../types/external';
 import { PRESSURE_REF_Pa, R_CONST_J__molK, TEMPERATURE_REF_K } from '../types/constants';
 
 export type ReactionMode = '<=>' | '=>' | '=';
@@ -9,6 +10,7 @@ export interface ReactionArgs {
     reaction: string;
     components?: Component[] | null;
     reaction_mode_symbol?: ReactionMode;
+    phase_rule?: string | null;
 }
 
 export interface Reactant {
@@ -517,7 +519,7 @@ export class ChemReact {
 }
 
 export function analyzeReaction(opts: ReactionArgs): ReactionAnalysis {
-    const { name, reaction, components = null } = opts;
+    const { name, reaction, components = null, phase_rule = null } = opts;
     let reaction_mode_symbol = opts.reaction_mode_symbol;
 
     if (!reaction_mode_symbol) {
@@ -533,5 +535,18 @@ export function analyzeReaction(opts: ReactionArgs): ReactionAnalysis {
     }
 
     const util = new ChemReact(reaction_mode_symbol, components ?? undefined);
-    return util.analyze_reaction({ name, reaction });
+    return util.analyze_reaction({ name, reaction }, phase_rule);
+}
+
+/**
+ * Convenience helper to analyze a Reaction spec directly.
+ */
+export function analyzeReactionFromReaction(reaction: Reaction): ReactionAnalysis {
+    return analyzeReaction({
+        name: reaction.name,
+        reaction: reaction.reaction,
+        components: reaction.components ?? null,
+        reaction_mode_symbol: reaction.reaction_mode_symbol,
+        phase_rule: reaction.phase_rule ?? null
+    });
 }

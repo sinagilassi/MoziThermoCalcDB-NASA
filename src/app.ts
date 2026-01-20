@@ -16,6 +16,19 @@ import { ModelSource, Reaction } from './types/external';
 import { selectNasaType } from './utils/tools';
 import { Source } from './core/Source';
 
+function buildReactionContext(opts: {
+  reaction: Reaction;
+  model_source: ModelSource;
+  component_key: ComponentKey;
+  nasa_type: NASAType;
+}): { rxn_adapter: RXNAdapter; hsgs: HSGs } {
+  const { reaction, model_source, component_key, nasa_type } = opts;
+  const Source_ = new Source(model_source, component_key);
+  const rxn_adapter = new RXNAdapter(reaction);
+  const hsgs = new HSGs(Source_, rxn_adapter.components, component_key, nasa_type);
+  return { rxn_adapter, hsgs };
+}
+
 export function H_T(opts: {
   component: Component;
   temperature: Temperature;
@@ -189,15 +202,10 @@ export function dG_rxn_STD(opts: {
 }): CustomProp | null {
   const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
 
-  const Source_ = new Source(model_source, component_key);
-  const components = reaction.available_components;
-
-  const hsgs = new HSGs(Source_, components, component_key, nasa_type);
-
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
   const G_i_IG = hsgs.calc_components_hsg(temperature, 'gibbs', { reaction_ids: true });
   if (!G_i_IG) return null;
 
-  const rxn_adapter = new RXNAdapter(reaction);
   return rxn_adapter.dG_rxn_std({ G_i_IG });
 }
 
@@ -210,15 +218,10 @@ export function dS_rxn_STD(opts: {
 }): CustomProp | null {
   const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
 
-  const Source_ = new Source(model_source, component_key);
-  const components = reaction.available_components;
-
-  const hsgs = new HSGs(Source_, components, component_key, nasa_type);
-
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
   const S_i_IG = hsgs.calc_components_hsg(temperature, 'entropy', { reaction_ids: true });
   if (!S_i_IG) return null;
 
-  const rxn_adapter = new RXNAdapter(reaction);
   return rxn_adapter.dS_rxn_std({ S_i_IG });
 }
 
@@ -231,15 +234,10 @@ export function dH_rxn_STD(opts: {
 }): CustomProp | null {
   const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
 
-  const Source_ = new Source(model_source, component_key);
-  const components = reaction.available_components;
-
-  const hsgs = new HSGs(Source_, components, component_key, nasa_type);
-
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
   const H_i_IG = hsgs.calc_components_hsg(temperature, 'enthalpy', { reaction_ids: true });
   if (!H_i_IG) return null;
 
-  const rxn_adapter = new RXNAdapter(reaction);
   return rxn_adapter.dH_rxn_std({ H_i_IG });
 }
 
@@ -252,15 +250,13 @@ export function Keq(opts: {
 }): CustomProp | null {
   const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
 
-  const Source_ = new Source(model_source, component_key);
-  const components = reaction.available_components;
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const G_i_IG = hsgs.calc_components_hsg(temperature, 'gibbs', { reaction_ids: true });
+  if (!G_i_IG) return null;
 
-  const hsgs = new HSGs(Source_, components, component_key, nasa_type);
-
-  const dG = dG_rxn_STD({ reaction, temperature, model_source, component_key, nasa_type });
+  const dG = rxn_adapter.dG_rxn_std({ G_i_IG });
   if (!dG) return null;
 
-  const rxn_adapter = new RXNAdapter(reaction);
   return rxn_adapter.Keq({ dG_rxn_STD: dG, temperature });
 }
 
@@ -273,33 +269,19 @@ export function Keq_vh_shortcut(opts: {
 }): CustomProp | null {
   const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
 
-  const Source_ = new Source(model_source, component_key);
-  const components = reaction.available_components;
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
   const standard_temperature: Temperature = { value: 298.15, unit: 'K' };
 
-  // Ensure HSGs instantiated even though not used directly here
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const hsgs = new HSGs(Source_, components, component_key, nasa_type);
-
-  const dH_std = dH_rxn_STD({
-    reaction,
-    temperature: standard_temperature,
-    model_source,
-    component_key,
-    nasa_type
-  });
+  const H_i_STD = hsgs.calc_components_hsg(standard_temperature, 'enthalpy', { reaction_ids: true });
+  if (!H_i_STD) return null;
+  const dH_std = rxn_adapter.dH_rxn_std({ H_i_IG: H_i_STD });
   if (!dH_std) return null;
 
-  const dG_std = dG_rxn_STD({
-    reaction,
-    temperature: standard_temperature,
-    model_source,
-    component_key,
-    nasa_type
-  });
+  const G_i_STD = hsgs.calc_components_hsg(standard_temperature, 'gibbs', { reaction_ids: true });
+  if (!G_i_STD) return null;
+  const dG_std = rxn_adapter.dG_rxn_std({ G_i_IG: G_i_STD });
   if (!dG_std) return null;
 
-  const rxn_adapter = new RXNAdapter(reaction);
   const Keq_STD = rxn_adapter.Keq({ dG_rxn_STD: dG_std, temperature: standard_temperature });
   if (!Keq_STD) return null;
 

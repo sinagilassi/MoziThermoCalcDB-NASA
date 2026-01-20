@@ -47,10 +47,13 @@ export interface Source {
 export type ModelSource = Record<string, CompoundTemperatureRanges>;
 
 export interface Reaction {
-  available_components: Component[];
+  name: string;
   reaction: string;
-  reaction_stoichiometry: Record<string, number>;
-  component_checker?: boolean;
-  map_components?: Record<string, Component>;
-  all_components?: string[];
+  components?: Component[];
+  reaction_mode_symbol?: '<=>' | '=>' | '=';
+  /**
+   * Optional phase rule to enforce consistent state across reactants/products.
+   * If omitted, per-species state markers in the reaction string are used.
+   */
+  phase_rule?: 'gas' | 'liquid' | 'aqueous' | 'solid' | null;
 }

@@ -1,5 +1,4 @@
 import { promises as fs } from 'node:fs';
-import path from 'node:path';
 import { parse } from 'csv-parse/sync';
 import { ComponentKey, NASARangeType, StateType } from '../types/constants';
 import { CompoundTemperatureRanges, ModelSource, NASA9TemperatureRangeData } from '../types/external';
@@ -129,20 +128,7 @@ export class DataLoader {
   }
 }
 
-export async function loadModelSource(dataDir?: string): Promise<ModelSource> {
-  if (!dataDir) {
-    throw new Error('loadModelSource requires a data directory path; CSVs are not bundled with the package.');
-  }
-  const rangeFiles: RangeFile[] = [
-    { path: path.join(dataDir, 'gas_nasa9_coeffs_min_0_max_1000.csv'), range: 'nasa9_200_1000_K' },
-    { path: path.join(dataDir, 'gas_nasa9_coeffs_min_1000_max_6000.csv'), range: 'nasa9_1000_6000_K' },
-    { path: path.join(dataDir, 'gas_nasa9_coeffs_min_6000_max_20000.csv'), range: 'nasa9_6000_20000_K' }
-  ];
-  const loader = new DataLoader(rangeFiles);
-  return loader.loadModelSource();
-}
-
-export async function loadModelSourceFromFiles(rangeFiles: RangeFile[]): Promise<ModelSource> {
+export async function loadModelSource(rangeFiles: RangeFile[]): Promise<ModelSource> {
   const loader = new DataLoader(rangeFiles);
   return loader.loadModelSource();
 }
