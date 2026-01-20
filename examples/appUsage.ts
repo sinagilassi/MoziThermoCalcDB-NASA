@@ -6,7 +6,6 @@
  * 2) Compute single-species properties (H, S, G, Cp).
  * 3) Compute reaction properties (dH, dS, dG, Keq, Keq via van't Hoff).
  *
- * Run with: `npx ts-node --esm --experimental-specifier-resolution=node examples/appUsage.ts`
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +17,7 @@ import { loadExampleModelSource } from './modelSource.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function main(): Promise<void> {
-  const dataDir = path.join(__dirname);
+  const dataDir = path.join(__dirname, '..', 'private');
   const model_source = await loadExampleModelSource(dataDir);
 
   // --- Single-species examples (NASA9) ---
