@@ -4,7 +4,7 @@ Performance-oriented notes for working with the NASA polynomial toolchain in `sr
 
 ## 📥 Data ingestion
 
-- Use `DataLoader`/`loadModelSource` to parse CSVs once into an in-memory `ModelSource`; invalid or incomplete rows are skipped early via `transformRow` validation.
+- Use the standalone `DataLoader`/`loadModelSource` script in `scripts/` to parse CSVs once into an in-memory `ModelSource`; invalid or incomplete rows are skipped early via `transformRow` validation.
 - Each row is indexed under multiple ids (`Name-State`, `Formula-State`, `Name-Formula`) so lookups avoid string recomputation in hot paths.
 - CSV parsing is synchronous and per-file; feed an array of `{ path, range }` objects to batch all ranges in a single pass.
 
@@ -47,7 +47,7 @@ Performance-oriented notes for working with the NASA polynomial toolchain in `sr
 ## 📘 Minimal snippet
 
 ```ts
-import { loadModelSource } from './src/data/DataLoader';
+import { loadModelSource } from './scripts/DataLoader';
 import { H_T, dG_rxn_STD } from './src/app';
 
 const modelSource = await loadModelSource([

@@ -1,9 +1,9 @@
 import { promises as fs } from 'node:fs';
 import { parse } from 'csv-parse/sync';
-import { ComponentKey, NASARangeType, StateType } from '@/types/constants';
-import { CompoundTemperatureRanges, ModelSource, NASA9TemperatureRangeData } from '@/types/external';
-import { setComponentId } from '@/utils/component';
-import { Component } from '@/types/models';
+import { ComponentKey, NASARangeType, StateType } from '../src/types/constants';
+import { CompoundTemperatureRanges, ModelSource, NASA9TemperatureRangeData } from '../src/types/external';
+import { setComponentId } from '../src/utils/component';
+import { Component } from '../src/types/models';
 
 type RawCSVRow = Record<string, string>;
 export type RangeFile = { path: string; range: NASARangeType };

@@ -8,8 +8,8 @@ import { setComponentId } from '../src/utils/component';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ComponentKey, NASARangeType } from '../src/types/constants.js';
 import type { ModelSource } from '../src/types/external.js';
-import type { RangeFile } from '../src/data/DataLoader.js';
-import { loadModelSource } from '../src/data/DataLoader.js';
+import type { RangeFile } from '../scripts/DataLoader.js';
+import { loadModelSource } from '../scripts/DataLoader.js';
 import { Component } from '../src/types/models.js';
 
 const DEFAULT_RANGE_FILE_NAMES: Array<{ filename: string; range: NASARangeType }> = [

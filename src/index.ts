@@ -19,8 +19,7 @@ export * from './core/HSGs';
 export * from './core/DataExtractor';
 export { Source } from './core/Source';
 
-// Data + thermo
-export * from './data';
+// Thermo
 export * from './thermo';
 
 // Reactions (avoid Keq conflict with app helper)

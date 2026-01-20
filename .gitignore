@@ -43,3 +43,6 @@ temp/
 
 private/
 !.codex/.gitkeep
+
+# tgz files
+*.tgz
