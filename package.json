@@ -1,7 +1,7 @@
 {
   "name": "mozithermocalcdb-nasa",
-  "version": "1.0.0",
-  "description": "Thermodynamic calculations using NASA7/9 polynomials (TypeScript port)",
+  "version": "0.1.0",
+  "description": "Thermodynamic calculations using NASA7/9 polynomials",
   "homepage": "https://github.com/sinagilassi/MoziThermoCalcDB-NASA#readme",
   "bugs": {
     "url": "https://github.com/sinagilassi/MoziThermoCalcDB-NASA/issues"
