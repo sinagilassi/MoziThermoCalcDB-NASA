@@ -43,22 +43,33 @@ async function main(): Promise<void> {
   // Reaction: 2 H2(g) + O2(g) => 2 H2O(g)
   const oxygen: Component = { name: 'dioxygen', formula: 'O2', state: 'g' };
   const water: Component = { name: 'dihydrogen monoxide', formula: 'H2O', state: 'g' };
+  const carbonDioxide: Component = { name: 'carbon dioxide', formula: 'CO2', state: 'g' };
+  const carbonMonoxide: Component = { name: 'carbon monoxide', formula: 'CO', state: 'g' };
 
   // RXNAnalyzer derives stoichiometry; keys use "Formula-State" because app.ts requests reaction_ids=true.
-  const reaction: Reaction = {
+  const reaction_0: Reaction = {
     name: 'water-formation-gas',
     reaction: '2 H2(g) + O2(g) => 2 H2O(g)',
-    components: [hydrogen, oxygen, water]
+    components: [hydrogen, oxygen, water],
   };
 
-  const reactionTemperature: Temperature = { value: 1200, unit: 'K' };
+  // Reaction WGSR
+  const reaction: Reaction = {
+    name: 'water-gas-shift-reaction',
+    reaction: 'CO(g) + H2O(g) => CO2(g) + H2(g)',
+    components: [hydrogen, water, carbonDioxide, carbonMonoxide]
+  }
+
+  const reactionTemperature: Temperature = { value: 398.15, unit: 'K' };
 
   console.log('\n=== Reaction properties for 2H2 + O2 -> 2H2O (gas) at 1200 K ===');
   const dH = dH_rxn_STD({ reaction, temperature: reactionTemperature, model_source });
   const dS = dS_rxn_STD({ reaction, temperature: reactionTemperature, model_source });
   const dG = dG_rxn_STD({ reaction, temperature: reactionTemperature, model_source });
-  const KeqVal = Keq({ reaction, temperature: reactionTemperature, model_source });
-  const KeqVH = Keq_vh_shortcut({ reaction, temperature: reactionTemperature, model_source });
+
+  const KeqTemperature: Temperature = { value: 1000, unit: 'K' };
+  const KeqVal = Keq({ reaction, temperature: KeqTemperature, model_source });
+  const KeqVH = Keq_vh_shortcut({ reaction, temperature: KeqTemperature, model_source });
 
   console.log('dH_rxn_STD:', dH);
   console.log('dS_rxn_STD:', dS);
