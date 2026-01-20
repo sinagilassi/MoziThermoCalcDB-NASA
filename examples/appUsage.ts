@@ -27,17 +27,17 @@ async function main(): Promise<void> {
   const temperature298: Temperature = { value: 298.15, unit: 'K' };
 
   console.log('=== Species properties for H2 (dihydrogen, gas) ===');
-  console.log('H(T=1500 K):', H_T({ component: hydrogen, temperature: temperature1500, model_source }));
-  console.log('S(T=1500 K):', S_T({ component: hydrogen, temperature: temperature1500, model_source }));
-  console.log('G(T=1500 K):', G_T({ component: hydrogen, temperature: temperature1500, model_source }));
-  console.log(
-    'Cp(T=298.15 K, molar):',
-    Cp_T({ component: hydrogen, temperature: temperature298, model_source, basis: 'molar' })
-  );
-  console.log(
-    'Cp(T=298.15 K, mass):',
-    Cp_T({ component: hydrogen, temperature: temperature298, model_source, basis: 'mass' })
-  );
+  const H_1500 = H_T({ component: hydrogen, temperature: temperature1500, model_source });
+  const S_1500 = S_T({ component: hydrogen, temperature: temperature1500, model_source });
+  const G_1500 = G_T({ component: hydrogen, temperature: temperature1500, model_source });
+  const Cp_298_molar = Cp_T({ component: hydrogen, temperature: temperature298, model_source, basis: 'molar' });
+  const Cp_298_mass = Cp_T({ component: hydrogen, temperature: temperature298, model_source, basis: 'mass' });
+
+  console.log('H(T=1500 K):', H_1500);
+  console.log('S(T=1500 K):', S_1500);
+  console.log('G(T=1500 K):', G_1500);
+  console.log('Cp(T=298.15 K, molar):', Cp_298_molar);
+  console.log('Cp(T=298.15 K, mass):', Cp_298_mass);
 
   // --- Reaction examples ---
   // Reaction: 2 H2(g) + O2(g) => 2 H2O(g)
