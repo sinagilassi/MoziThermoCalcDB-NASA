@@ -40,13 +40,3 @@ export interface NASA9Coefficients {
   b1: number;
   b2: number;
 }
-
-export interface ComponentEquationSource {
-  component: Component;
-  temperatureRange: NASARangeType;
-  coefficients: NASA7Coefficients | NASA9Coefficients;
-  Tmin: number;
-  Tmax: number;
-  hf298: number;
-  mw: number;
-}
