@@ -35,3 +35,7 @@ coverage/
 tmp/
 temp/
 *.log
+
+# codex
+.codex/*
+.codex/
