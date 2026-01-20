@@ -37,5 +37,6 @@ temp/
 *.log
 
 # codex
-.codex/*
+.codex/**/*
 .codex/
+.codex/*
