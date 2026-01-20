@@ -1,5 +1,5 @@
 {
-  "name": "thermocalcdb-nasa",
+  "name": "mozithermocalcdb-nasa",
   "version": "1.0.0",
   "description": "Thermodynamic calculations using NASA7/9 polynomials (TypeScript port)",
   "homepage": "https://github.com/sinagilassi/ThermoCalcDB-NASA#readme",
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/sinagilassi/ThermoCalcDB-NASA.git"
   },
-  "license": "ISC",
+  "license": "Apache-2.0",
   "author": "Sina Gilassi",
   "type": "module",
   "main": "./dist/index.js",
