@@ -40,3 +40,6 @@ temp/
 .codex/**/*
 .codex/
 .codex/*
+
+private/
+!.codex/.gitkeep
