@@ -1,5 +1,5 @@
-import { CustomProp, Temperature } from '../types/models';
-import { toKelvin } from '../utils/unitConverter';
+import { CustomProp, Temperature } from '@/types/models';
+import { toKelvin } from '@/utils/unitConverter';
 import { En_IG_NASA7_polynomial, En_IG_NASA9_polynomial } from './enthalpy';
 import { S_IG_NASA7_polynomial, S_IG_NASA9_polynomial } from './entropy';
 

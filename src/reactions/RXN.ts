@@ -1,9 +1,9 @@
-import { CustomProp, Temperature } from '../types/models';
+import { CustomProp, Temperature } from '@/types/models';
 import { ReactionAnalysis } from './RXNAnalyzer';
-import { ensureEnergy, ensureEntropy, ensureKelvin, toJPerMol } from '../utils/conversions';
+import { ensureEnergy, ensureEntropy, ensureKelvin, toJPerMol } from '@/utils/conversions';
 import { _Keq as KeqThermo, _Keq_VH_Shortcut } from './reactions';
-import { R_CONST_J__molK, TEMPERATURE_REF_K } from '../types/constants';
-import { integrateTrapezoidal } from '../utils/mathMethods';
+import { R_CONST_J__molK, TEMPERATURE_REF_K } from '@/types/constants';
+import { integrateTrapezoidal } from '@/utils/mathMethods';
 
 /**
  * ! RXN handles reaction-level thermodynamics: dH, dG, dS, Keq.

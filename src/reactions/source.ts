@@ -1,5 +1,5 @@
-import { CustomProp, Temperature } from '../types/models';
-import { Reaction } from '../types/external';
+import { CustomProp, Temperature } from '@/types/models';
+import { Reaction } from '@/types/external';
 import { analyzeReactionFromReaction } from './RXNAnalyzer';
 import { RXN } from './RXN';
 

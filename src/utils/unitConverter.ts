@@ -1,4 +1,4 @@
-import { CustomProp, Temperature } from '../types';
+import { CustomProp, Temperature } from '@/types';
 
 export type SupportedTempUnit = Temperature['unit'];
 

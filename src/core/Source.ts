@@ -1,13 +1,13 @@
-import { ComponentKey, NASARangeType } from '../types/constants';
-import { Component } from '../types/models';
+import { ComponentKey, NASARangeType } from '@/types/constants';
+import { Component } from '@/types/models';
 import {
   ComponentEquationSource,
   CompoundTemperatureRanges,
   ModelSource,
   TemperatureRangeData,
   Source as SourceType
-} from '../types/external';
-import { setComponentId } from '../utils/component';
+} from '@/types/external';
+import { setComponentId } from '@/utils/component';
 
 type RangeLookup = { range: NASARangeType; data: TemperatureRangeData };
 

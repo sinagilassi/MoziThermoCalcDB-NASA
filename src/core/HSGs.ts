@@ -7,11 +7,11 @@ import {
   TEMPERATURE_BREAK_NASA7_6000_K,
   TEMPERATURE_BREAK_NASA9_1000_K,
   TEMPERATURE_BREAK_NASA9_6000_K
-} from '../types/constants';
-import { Component, CustomProp, Temperature } from '../types/models';
-import { Source } from '../types/external';
-import { selectNasaType } from '../utils/tools';
-import { setComponentId } from '../utils/component';
+} from '@/types/constants';
+import { Component, CustomProp, Temperature } from '@/types/models';
+import { Source } from '@/types/external';
+import { selectNasaType } from '@/utils/tools';
+import { setComponentId } from '@/utils/component';
 
 // NOTE: PropName Type
 type PropName = 'enthalpy' | 'entropy' | 'gibbs' | 'heat_capacity';

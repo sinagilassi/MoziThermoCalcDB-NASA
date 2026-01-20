@@ -1,6 +1,6 @@
-import { Component } from '../types/models';
-import { Reaction } from '../types/external';
-import { PRESSURE_REF_Pa, R_CONST_J__molK, TEMPERATURE_REF_K } from '../types/constants';
+import { Component } from '@/types/models';
+import { Reaction } from '@/types/external';
+import { PRESSURE_REF_Pa, R_CONST_J__molK, TEMPERATURE_REF_K } from '@/types/constants';
 
 export type ReactionMode = '<=>' | '=>' | '=';
 export type PhaseRule = 'gas' | 'liquid' | 'aqueous' | 'solid';

@@ -1,4 +1,4 @@
-import { CustomProp, Temperature } from '../types/models';
+import { CustomProp, Temperature } from '@/types/models';
 import { toKelvin } from './unitConverter';
 
 type EnergyUnit = 'J/mol' | 'kJ/mol' | 'cal/mol' | 'kcal/mol';

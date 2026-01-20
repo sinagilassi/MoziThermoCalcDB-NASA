@@ -1,5 +1,5 @@
-import { NASARangeType, NASAType } from '../types/constants';
-import { CustomProp, NASA7Coefficients, NASA9Coefficients, Temperature } from '../types/models';
+import { NASARangeType, NASAType } from '@/types/constants';
+import { CustomProp, NASA7Coefficients, NASA9Coefficients, Temperature } from '@/types/models';
 import { energyOrEntropyToMassBasis, toKelvin } from './unitConverter';
 
 const ENERGY_UNITS = new Set(['j', 'kj', 'cal', 'kcal']);

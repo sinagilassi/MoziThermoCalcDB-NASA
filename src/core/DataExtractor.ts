@@ -1,6 +1,6 @@
-import { ComponentKey } from '../types/constants';
-import { ComponentEquationSource, Source } from '../types/external';
-import { Component } from '../types/models';
+import { ComponentKey } from '@/types/constants';
+import { ComponentEquationSource, Source } from '@/types/external';
+import { Component } from '@/types/models';
 
 /**
  * Minimal data extractor that defers to an injected Source implementation.

@@ -1,5 +1,5 @@
-import { CustomProp } from '../types/models';
-import { R_CONST_J__molK, TEMPERATURE_REF_K } from '../types/constants';
+import { CustomProp } from '@/types/models';
+import { R_CONST_J__molK, TEMPERATURE_REF_K } from '@/types/constants';
 
 /**
  * ! Keq = exp(-dG / (R * T))

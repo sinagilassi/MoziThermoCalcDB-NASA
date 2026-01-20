@@ -1,5 +1,5 @@
-import { CustomProp, Temperature } from '../types/models';
-import { toKelvin } from '../utils/unitConverter';
+import { CustomProp, Temperature } from '@/types/models';
+import { toKelvin } from '@/utils/unitConverter';
 
 type NASA9Args = {
   a1: number; a2: number; a3: number; a4: number; a5: number; a6: number; a7: number; b1: number; b2: number;

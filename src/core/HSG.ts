@@ -4,20 +4,20 @@ import {
   En_IG_NASA9_polynomial_ranges,
   En_IG_NASA7_polynomial,
   En_IG_NASA7_polynomial_ranges
-} from '../thermo/enthalpy';
+} from '@/thermo/enthalpy';
 import {
   S_IG_NASA9_polynomial,
   S_IG_NASA9_polynomial_ranges,
   S_IG_NASA7_polynomial,
   S_IG_NASA7_polynomial_ranges
-} from '../thermo/entropy';
-import { GiFrEn_IG, GiFrEn_IG_ranges } from '../thermo/gibbs';
-import { Cp_IG_NASA9_polynomial, Cp_IG_NASA7_polynomial } from '../thermo/heatCapacity';
-import { requireCoeffs, toMassBasis } from '../utils/tools';
-import { setComponentId } from '../utils/component';
-import { BasisType, ComponentKey, NASARangeType, NASAType } from '../types/constants';
-import { ComponentEquationSource, Source, TemperatureRangeData } from '../types/external';
-import { Component, CustomProp, Temperature } from '../types/models';
+} from '@/thermo/entropy';
+import { GiFrEn_IG, GiFrEn_IG_ranges } from '@/thermo/gibbs';
+import { Cp_IG_NASA9_polynomial, Cp_IG_NASA7_polynomial } from '@/thermo/heatCapacity';
+import { requireCoeffs, toMassBasis } from '@/utils/tools';
+import { setComponentId } from '@/utils/component';
+import { BasisType, ComponentKey, NASARangeType, NASAType } from '@/types/constants';
+import { ComponentEquationSource, Source, TemperatureRangeData } from '@/types/external';
+import { Component, CustomProp, Temperature } from '@/types/models';
 
 const REQ_COEFFS_NASA7 = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7'] as const;
 const REQ_COEFFS_NASA9 = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'b1', 'b2'] as const;

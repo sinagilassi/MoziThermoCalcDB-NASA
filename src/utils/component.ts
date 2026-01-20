@@ -1,5 +1,5 @@
-import { Component } from '../types/models';
-import { ComponentKey } from '../types/constants';
+import { Component } from '@/types/models';
+import { ComponentKey } from '@/types/constants';
 
 /**
  * Basic component identifier helper mirroring Python set_component_id behavior.
