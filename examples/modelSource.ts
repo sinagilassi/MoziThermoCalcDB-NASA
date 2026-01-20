@@ -2,13 +2,15 @@
  * Convenience helper to build a `ModelSource` from the NASA9 CSVs that ship in
  * `agents/assets`. This is the same structure expected by the functions in
  * `src/app.ts`.
- */
+*/
 import path from 'node:path';
+import { setComponentId } from '../src/utils/component';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { NASARangeType } from '../src/types/constants.js';
+import { ComponentKey, NASARangeType } from '../src/types/constants.js';
 import type { ModelSource } from '../src/types/external.js';
 import type { RangeFile } from '../src/data/DataLoader.js';
 import { loadModelSource } from '../src/data/DataLoader.js';
+import { Component } from '../src/types/models.js';
 
 const DEFAULT_RANGE_FILE_NAMES: Array<{ filename: string; range: NASARangeType }> = [
   { filename: 'gas_nasa9_coeffs_min_0_max_1000.csv', range: 'nasa9_200_1000_K' },
@@ -57,4 +59,29 @@ if (isDirectRun) {
       console.error('Failed to load ModelSource:', err);
       process.exitCode = 1;
     });
+}
+
+/**
+ * Build component data from NASA9 CSVs and build a ModelSource object.
+ * @returns ModelSource object containing only the specified components.
+ * @param components Array of component IDs to include in the ModelSource.
+ * @param model_source Full ModelSource object to extract components from.
+ */
+export async function buildComponentModelSource(
+  components: Component[],
+  model_source: ModelSource,
+  component_key: ComponentKey = 'Name-Formula'
+): Promise<ModelSource> {
+  const extractedModelSource: ModelSource = {};
+
+  for (const componentId of components) {
+    // create component id
+    const id = setComponentId({ component: componentId, componentKey: component_key },);
+
+    const componentData = model_source[id];
+    if (componentData) {
+      extractedModelSource[id] = componentData;
+    }
+
+  } return extractedModelSource;
 }
