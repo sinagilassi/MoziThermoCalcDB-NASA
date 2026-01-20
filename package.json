@@ -2,13 +2,13 @@
   "name": "mozithermocalcdb-nasa",
   "version": "1.0.0",
   "description": "Thermodynamic calculations using NASA7/9 polynomials (TypeScript port)",
-  "homepage": "https://github.com/sinagilassi/ThermoCalcDB-NASA#readme",
+  "homepage": "https://github.com/sinagilassi/MoziThermoCalcDB-NASA#readme",
   "bugs": {
-    "url": "https://github.com/sinagilassi/ThermoCalcDB-NASA/issues"
+    "url": "https://github.com/sinagilassi/MoziThermoCalcDB-NASA/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sinagilassi/ThermoCalcDB-NASA.git"
+    "url": "git+https://github.com/sinagilassi/MoziThermoCalcDB-NASA.git"
   },
   "license": "Apache-2.0",
   "author": "Sina Gilassi",
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "test": "vitest",
+    "test": "node --no-deprecation node_modules/vitest/vitest.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts"
   },
