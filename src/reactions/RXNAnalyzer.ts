@@ -50,6 +50,9 @@ export interface ReactionAnalysis {
     component_checker: boolean;
 }
 
+/**
+ * ! Main class to analyze chemical reactions.
+ */
 export class ChemReact {
     private _system_inputs: Record<string, unknown> | null = null;
     readonly R = R_CONST_J__molK;
@@ -63,6 +66,7 @@ export class ChemReact {
     readonly components: Component[] | null | undefined;
     readonly component_ids: string[];
 
+    // NOTE: constructor
     constructor(reaction_mode_symbol: ReactionMode, components?: Component[] | null) {
         this.reaction_mode_symbol = reaction_mode_symbol;
         this.components = components ?? null;

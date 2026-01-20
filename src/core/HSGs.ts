@@ -13,6 +13,7 @@ import { Source } from '../types/external';
 import { selectNasaType } from '../utils/tools';
 import { setComponentId } from '../utils/component';
 
+// NOTE: PropName Type
 type PropName = 'enthalpy' | 'entropy' | 'gibbs' | 'heat_capacity';
 
 export class HSGs {
@@ -23,36 +24,43 @@ export class HSGs {
 
   components_hsg: Record<string, HSG>;
 
+  // NOTE: Constructor
   constructor(
     private readonly source: Source,
     private readonly components: Component[],
     private readonly component_key: ComponentKey,
     private readonly nasa_type: NASAType
   ) {
+    // ! Set component IDs
     this.component_ids = components.map((component) =>
       setComponentId({ component, componentKey: component_key })
     );
 
+    // ! Set reaction component IDs
     this.reaction_component_ids = {};
     for (const [compId, component] of this.component_ids.map((id, idx) => [id, components[idx]] as const)) {
       this.reaction_component_ids[compId] = `${component.formula}-${component.state}`;
     }
 
+    // ! Set NASA temperature breaks
     const nasa_temperature_break_min_value =
       this.nasa_type === 'nasa7'
         ? TEMPERATURE_BREAK_NASA7_1000_K
         : TEMPERATURE_BREAK_NASA9_1000_K;
     this.nasa_temperature_break_min = { value: nasa_temperature_break_min_value, unit: 'K' };
 
+    // ! Set NASA temperature breaks
     const nasa_temperature_break_max_value =
       this.nasa_type === 'nasa7'
         ? TEMPERATURE_BREAK_NASA7_6000_K
         : TEMPERATURE_BREAK_NASA9_6000_K;
     this.nasa_temperature_break_max = { value: nasa_temperature_break_max_value, unit: 'K' };
 
+    // ! Build HSGs for components
     this.components_hsg = this.build_components_hsg();
   }
 
+  // NOTE: Build HSGs for components
   build_components_hsg(): Record<string, HSG> {
     const hsgs: Record<string, HSG> = {};
     for (const [id, component] of this.component_ids.map((id, idx) => [id, this.components[idx]] as const)) {
@@ -66,6 +74,7 @@ export class HSGs {
     return hsgs;
   }
 
+  // NOTE: Calculate properties for all components HSGs
   calc_components_hsg(
     temperature: Temperature,
     prop_name: PropName,

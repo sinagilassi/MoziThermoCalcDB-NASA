@@ -11,6 +11,8 @@ type NASA7Args = {
 
 const R = 8.31446261815324; // J/mol.K
 
+// SECTION: NASA 9 Coefficients
+// NOTE: Heat Capacity of Ideal Gas Calculations using NASA 9 Coefficients
 export function Cp_IG_NASA9_polynomial(args: NASA9Args & { temperature: Temperature }): CustomProp | null {
   const T = toKelvin(args.temperature);
   if (!Number.isFinite(T) || T <= 0) return null;
@@ -20,6 +22,8 @@ export function Cp_IG_NASA9_polynomial(args: NASA9Args & { temperature: Temperat
   return { value, unit: 'J/mol.K' };
 }
 
+// SECTION: NASA 7 Coefficients
+// NOTE: Heat Capacity of Ideal Gas Calculations using NASA 7 Coefficients
 export function Cp_IG_NASA7_polynomial(args: NASA7Args & { temperature: Temperature }): CustomProp | null {
   const T = toKelvin(args.temperature);
   if (!Number.isFinite(T) || T <= 0) return null;

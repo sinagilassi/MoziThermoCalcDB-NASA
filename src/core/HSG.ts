@@ -38,6 +38,7 @@ export class HSG extends DataExtractor {
 
   private _props?: Record<string, number> | null;
 
+  // NOTE: constructor
   constructor(opts: {
     source: Source;
     component: Component;
@@ -55,11 +56,14 @@ export class HSG extends DataExtractor {
       componentKey: this.component_key
     });
 
+    // Extract NASA9 coefficients if specified
     if (opts.nasa_type === 'nasa9') {
       this.nasa9_200_1000_coefficients = this._extract_nasa_coefficients('nasa9_200_1000_K');
       this.nasa9_1000_6000_coefficients = this._extract_nasa_coefficients('nasa9_1000_6000_K');
       this.nasa9_6000_20000_coefficients = this._extract_nasa_coefficients('nasa9_6000_20000_K');
     }
+
+    // Extract NASA7 coefficients if specified
     if (opts.nasa_type === 'nasa7') {
       this.nasa7_200_1000_coefficients = this._extract_nasa_coefficients('nasa7_200_1000_K');
       this.nasa7_1000_6000_coefficients = this._extract_nasa_coefficients('nasa7_1000_6000_K');
@@ -95,6 +99,7 @@ export class HSG extends DataExtractor {
     }
   }
 
+  // NOTE: set NASA coefficients
   private _set_nasa_coefficients(nasa_type: NASARangeType): Record<string, number> | null {
     let coeffs: TemperatureRangeData | null | undefined;
     let pack: Record<string, number> | null = null;
@@ -140,6 +145,7 @@ export class HSG extends DataExtractor {
     }
   }
 
+  // SECTION: Calculate absolute enthalpy
   calc_absolute_enthalpy(temperature: Temperature, nasa_type: NASARangeType): CustomProp | null {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;
@@ -156,6 +162,7 @@ export class HSG extends DataExtractor {
     return enthalpy;
   }
 
+  // SECTION: Calculate absolute entropy
   calc_absolute_entropy(temperature: Temperature, nasa_type: NASARangeType): CustomProp | null {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;
@@ -172,6 +179,7 @@ export class HSG extends DataExtractor {
     return entropy;
   }
 
+  // SECTION: Calculate Gibbs free energy
   calc_gibbs_free_energy(temperature: Temperature, nasa_type: NASARangeType): CustomProp | null {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;
@@ -189,6 +197,7 @@ export class HSG extends DataExtractor {
     return gibbs;
   }
 
+  // SECTION: Calculate heat capacity
   calc_heat_capacity(temperature: Temperature, nasa_type: NASARangeType): CustomProp | null {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;
@@ -205,6 +214,7 @@ export class HSG extends DataExtractor {
     return heatCapacity;
   }
 
+  // SECTION: Calculate enthalpy range
   calc_absolute_enthalpy_range(temperatures: Temperature[], nasa_type: NASARangeType) {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;
@@ -217,6 +227,7 @@ export class HSG extends DataExtractor {
     return enthalpyRange ?? null;
   }
 
+  // SECTION: Calculate entropy range
   calc_absolute_entropy_range(temperatures: Temperature[], nasa_type: NASARangeType) {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;
@@ -229,6 +240,7 @@ export class HSG extends DataExtractor {
     return entropyRange ?? null;
   }
 
+  // SECTION: Calculate Gibbs free energy range
   calc_gibbs_free_energy_range(temperatures: Temperature[], nasa_type: NASARangeType) {
     const pack = this._set_nasa_coefficients(nasa_type);
     if (!pack) return null;

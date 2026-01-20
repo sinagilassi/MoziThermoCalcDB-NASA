@@ -13,6 +13,7 @@ function toNumber(value: string | number | undefined): number | null {
   return Number.isFinite(num) ? num : null;
 }
 
+// NOTE: Build Component from NASA9TemperatureRangeData
 function buildComponent(data: NASA9TemperatureRangeData): Component {
   return {
     name: data.Name,
@@ -21,6 +22,7 @@ function buildComponent(data: NASA9TemperatureRangeData): Component {
   };
 }
 
+// SECTION: DataLoader Class for loading NASA polynomial data from CSV files
 export class DataLoader {
   constructor(private readonly rangeFiles: RangeFile[]) {
     if (!rangeFiles.length) {

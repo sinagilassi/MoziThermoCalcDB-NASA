@@ -16,6 +16,7 @@ type NASA7Args = {
 type GiArgs = (NASA9Args | NASA7Args) & { temperature: Temperature };
 type GiRangeArgs = (NASA9Args | NASA7Args) & { temperatures: Temperature[] };
 
+// NOTE: Gibbs Free Energy of Ideal Gas Calculations
 export function GiFrEn_IG(args: GiArgs): CustomProp | null {
   const T = toKelvin(args.temperature);
   const H =
@@ -31,6 +32,7 @@ export function GiFrEn_IG(args: GiArgs): CustomProp | null {
   return { value, unit: 'J/mol' };
 }
 
+// NOTE: Gibbs Free Energy of Ideal Gas Calculations for Temperature Ranges
 export function GiFrEn_IG_ranges(args: GiRangeArgs): CustomProp[] | null {
   const results = args.temperatures.map((temperature) =>
     GiFrEn_IG({ ...(args as any), temperature })?.value ?? null

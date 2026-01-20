@@ -1,12 +1,12 @@
 import { ComponentKey } from '../types/constants';
 import { ComponentEquationSource, Source } from '../types/external';
-import { Component, NASA7Coefficients, NASA9Coefficients } from '../types/models';
+import { Component } from '../types/models';
 
 /**
  * Minimal data extractor that defers to an injected Source implementation.
  */
 export class DataExtractor {
-  constructor(protected readonly source: Source) {}
+  constructor(protected readonly source: Source) { }
 
   protected _get_equation_source(opts: {
     component: Component;

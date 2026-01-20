@@ -11,27 +11,36 @@ import { setComponentId } from '../utils/component';
 
 type RangeLookup = { range: NASARangeType; data: TemperatureRangeData };
 
+// LINK: Source class to retrieve NASA polynomial data for components
 export class Source implements SourceType {
-  constructor(public readonly model_source: ModelSource, public readonly component_key: ComponentKey) {}
+  // NOTE: Constructor
+  constructor(public readonly model_source: ModelSource, public readonly component_key: ComponentKey) { }
 
+  // NOTE: Method to get data source for a component and property
   getDataSource(args: {
     component: Component;
     componentKey: ComponentKey | string;
     propName: NASARangeType;
   }): ComponentEquationSource | null {
+    // ! component key
     const componentKey = (args.componentKey as ComponentKey | undefined) ?? this.component_key;
+
+    // ! component id
     const componentId = setComponentId({ component: args.component, componentKey });
 
+    // ! compound data
     const compoundData = this.model_source[componentId];
     if (!compoundData) {
       return null;
     }
 
+    // ! range match
     const rangeMatch = this.pickRange(compoundData, args.propName);
     if (!rangeMatch) {
       return null;
     }
 
+    // ! validated range
     const validatedRange = this.validateRangeData(rangeMatch.data, rangeMatch.range);
     if (!validatedRange) {
       return null;
@@ -44,6 +53,7 @@ export class Source implements SourceType {
     };
   }
 
+  // NOTE: Private method to select the best matching temperature range
   private pickRange(
     compoundData: CompoundTemperatureRanges,
     preferredRange: NASARangeType
@@ -58,6 +68,7 @@ export class Source implements SourceType {
     return null;
   }
 
+  // NOTE: Private method to build preference order for temperature ranges
   private buildRangePreference(preferredRange: NASARangeType): NASARangeType[] {
     const nasa9Order: NASARangeType[] = ['nasa9_6000_20000_K', 'nasa9_1000_6000_K', 'nasa9_200_1000_K'];
     const nasa7Order: NASARangeType[] = ['nasa7_6000_20000_K', 'nasa7_1000_6000_K', 'nasa7_200_1000_K'];
@@ -65,6 +76,7 @@ export class Source implements SourceType {
     return [preferredRange, ...baseOrder.filter((range) => range !== preferredRange)];
   }
 
+  // NOTE: Private method to validate the completeness of range data
   private validateRangeData(
     rangeData: TemperatureRangeData,
     range: NASARangeType

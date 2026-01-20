@@ -11,6 +11,8 @@ type NASA7Args = {
 
 const R = 8.31446261815324; // J/mol.K
 
+// SECTION: NASA 9 Coefficients
+// NOTE: Entropy of Ideal Gas Calculations using NASA 9 Coefficients
 export function S_IG_NASA9_polynomial(args: NASA9Args & { temperature: Temperature }): CustomProp | null {
   const T = toKelvin(args.temperature);
   if (!Number.isFinite(T) || T <= 0) return null;
@@ -28,6 +30,7 @@ export function S_IG_NASA9_polynomial(args: NASA9Args & { temperature: Temperatu
   return { value, unit: 'J/mol.K' };
 }
 
+// NOTE: Entropy of Ideal Gas Calculations for Temperature Ranges
 export function S_IG_NASA9_polynomial_range(args: NASA9Args & { temperatures: Temperature[] }): CustomProp[] | null {
   const results = args.temperatures.map((temperature) =>
     S_IG_NASA9_polynomial({ ...args, temperature })?.value ?? null
@@ -40,6 +43,8 @@ export function S_IG_NASA9_polynomial_ranges(args: NASA9Args & { temperatures: T
   return S_IG_NASA9_polynomial_range(args);
 }
 
+// SECTION: NASA 7 Coefficients
+// NOTE: Entropy of Ideal Gas Calculations using NASA 7 Coefficients
 export function S_IG_NASA7_polynomial(args: NASA7Args & { temperature: Temperature }): CustomProp | null {
   const T = toKelvin(args.temperature);
   if (!Number.isFinite(T) || T <= 0) return null;
@@ -55,6 +60,7 @@ export function S_IG_NASA7_polynomial(args: NASA7Args & { temperature: Temperatu
   return { value, unit: 'J/mol.K' };
 }
 
+// NOTE: Entropy of Ideal Gas Calculations for Temperature Ranges
 export function S_IG_NASA7_polynomial_range(args: NASA7Args & { temperatures: Temperature[] }): CustomProp[] | null {
   const results = args.temperatures.map((temperature) =>
     S_IG_NASA7_polynomial({ ...args, temperature })?.value ?? null

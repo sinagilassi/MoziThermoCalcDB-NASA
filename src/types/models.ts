@@ -1,4 +1,4 @@
-import { NASARangeType, StateType } from './constants';
+import { StateType } from './constants';
 
 export interface Temperature {
   value: number;

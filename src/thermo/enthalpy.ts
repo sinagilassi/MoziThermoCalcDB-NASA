@@ -11,23 +11,28 @@ type NASA7Args = {
 
 const R = 8.31446261815324; // J/mol.K
 
+// SECTION: NASA 9 Coefficients
+// NOTE: Enthalpy of Ideal Gas Calculations
 export function En_IG_NASA9_polynomial(args: NASA9Args & { temperature: Temperature }): CustomProp | null {
   const T = toKelvin(args.temperature);
   if (!Number.isFinite(T) || T <= 0) return null;
   const { a1, a2, a3, a4, a5, a6, a7, b1 } = args;
   const value =
     R *
-    (-a1 / T +
+    (
+      -a1 / T +
       a2 * Math.log(T) +
       a3 * T +
       (a4 / 2) * T ** 2 +
       (a5 / 3) * T ** 3 +
       (a6 / 4) * T ** 4 +
       (a7 / 5) * T ** 5 +
-      b1);
+      b1
+    );
   return { value, unit: 'J/mol' };
 }
 
+// NOTE: Enthalpy of Ideal Gas Calculations for Temperature Ranges
 export function En_IG_NASA9_polynomial_range(args: NASA9Args & { temperatures: Temperature[] }): CustomProp[] | null {
   const results = args.temperatures.map((temperature) =>
     En_IG_NASA9_polynomial({ ...args, temperature })?.value ?? null
@@ -40,6 +45,8 @@ export function En_IG_NASA9_polynomial_ranges(args: NASA9Args & { temperatures: 
   return En_IG_NASA9_polynomial_range(args);
 }
 
+// SECTION: NASA 7 Coefficients
+// NOTE: Enthalpy of Ideal Gas Calculations using NASA 7 Coefficients
 export function En_IG_NASA7_polynomial(args: NASA7Args & { temperature: Temperature }): CustomProp | null {
   const T = toKelvin(args.temperature);
   if (!Number.isFinite(T) || T <= 0) return null;
@@ -47,10 +54,18 @@ export function En_IG_NASA7_polynomial(args: NASA7Args & { temperature: Temperat
   const value =
     R *
     T *
-    (a1 + (a2 * T) / 2 + (a3 * T ** 2) / 3 + (a4 * T ** 3) / 4 + (a5 * T ** 4) / 5 + a6 / T);
+    (
+      a1 +
+      (a2 * T) / 2 +
+      (a3 * T ** 2) / 3 +
+      (a4 * T ** 3) / 4 +
+      (a5 * T ** 4) / 5 +
+      a6 / T
+    );
   return { value, unit: 'J/mol' };
 }
 
+// NOTE: Enthalpy of Ideal Gas Calculations for Temperature Ranges using NASA 7 Coefficients
 export function En_IG_NASA7_polynomial_range(args: NASA7Args & { temperatures: Temperature[] }): CustomProp[] | null {
   const results = args.temperatures.map((temperature) =>
     En_IG_NASA7_polynomial({ ...args, temperature })?.value ?? null
