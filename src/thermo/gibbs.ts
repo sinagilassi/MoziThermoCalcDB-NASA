@@ -1,4 +1,7 @@
 import { CustomProp, Temperature } from '../types/models';
+import { toKelvin } from '../utils/unitConverter';
+import { En_IG_NASA7_polynomial, En_IG_NASA9_polynomial } from './enthalpy';
+import { S_IG_NASA7_polynomial, S_IG_NASA9_polynomial } from './entropy';
 
 type NASA9Args = {
   method: 'NASA9';
@@ -13,11 +16,25 @@ type NASA7Args = {
 type GiArgs = (NASA9Args | NASA7Args) & { temperature: Temperature };
 type GiRangeArgs = (NASA9Args | NASA7Args) & { temperatures: Temperature[] };
 
-// TODO: Implement Gibbs free energy calculations
 export function GiFrEn_IG(args: GiArgs): CustomProp | null {
-  return null;
+  const T = toKelvin(args.temperature);
+  const H =
+    args.method === 'NASA9'
+      ? En_IG_NASA9_polynomial({ ...args, temperature: args.temperature })?.value ?? null
+      : En_IG_NASA7_polynomial({ ...args, temperature: args.temperature })?.value ?? null;
+  const S =
+    args.method === 'NASA9'
+      ? S_IG_NASA9_polynomial({ ...args, temperature: args.temperature })?.value ?? null
+      : S_IG_NASA7_polynomial({ ...args, temperature: args.temperature })?.value ?? null;
+  if (H === null || S === null) return null;
+  const value = H - T * S;
+  return { value, unit: 'J/mol' };
 }
 
 export function GiFrEn_IG_ranges(args: GiRangeArgs): CustomProp[] | null {
-  return null;
+  const results = args.temperatures.map((temperature) =>
+    GiFrEn_IG({ ...(args as any), temperature })?.value ?? null
+  );
+  if (results.every((v) => v === null)) return null;
+  return results.map((v) => ({ value: v ?? 0, unit: 'J/mol' }));
 }

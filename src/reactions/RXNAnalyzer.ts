@@ -5,10 +5,10 @@ export type ReactionMode = '<=>' | '=>' | '=';
 export type PhaseRule = 'gas' | 'liquid' | 'aqueous' | 'solid';
 
 export interface ReactionArgs {
-  name: string;
-  reaction: string;
-  components?: Component[] | null;
-  reaction_mode_symbol?: ReactionMode;
+    name: string;
+    reaction: string;
+    components?: Component[] | null;
+    reaction_mode_symbol?: ReactionMode;
 }
 
 export interface Reactant {
@@ -44,8 +44,8 @@ export interface ReactionAnalysis {
     reaction_phase: string;
     state_count: Record<string, number>;
     components: Component[];
-  map_components: Record<string, Component>;
-  component_checker: boolean;
+    map_components: Record<string, Component>;
+    component_checker: boolean;
 }
 
 export class ChemReact {
@@ -498,11 +498,11 @@ export class ChemReact {
         return components;
     }
 
-  map_components(reactants: Reactant[], products: Product[]): Record<string, Component> {
-    const component_map: Record<string, Component> = {};
-    if (!this.components) {
-      return component_map;
-    }
+    map_components(reactants: Reactant[], products: Product[]): Record<string, Component> {
+        const component_map: Record<string, Component> = {};
+        if (!this.components) {
+            return component_map;
+        }
         const reaction_participants = [...reactants, ...products];
         for (const item of reaction_participants) {
             const component_id_ = item.molecule_state;
@@ -511,27 +511,27 @@ export class ChemReact {
                 const component = this.components[index];
                 component_map[component_id_] = component;
             }
+        }
+        return component_map;
     }
-    return component_map;
-  }
 }
 
 export function analyzeReaction(opts: ReactionArgs): ReactionAnalysis {
-  const { name, reaction, components = null } = opts;
-  let reaction_mode_symbol = opts.reaction_mode_symbol;
+    const { name, reaction, components = null } = opts;
+    let reaction_mode_symbol = opts.reaction_mode_symbol;
 
-  if (!reaction_mode_symbol) {
-    if (reaction.includes('<=>')) {
-      reaction_mode_symbol = '<=>';
-    } else if (reaction.includes('=>')) {
-      reaction_mode_symbol = '=>';
-    } else if (reaction.includes('=')) {
-      reaction_mode_symbol = '=';
-    } else {
-      throw new Error(`Invalid reaction format in reaction: ${reaction}`);
+    if (!reaction_mode_symbol) {
+        if (reaction.includes('<=>')) {
+            reaction_mode_symbol = '<=>';
+        } else if (reaction.includes('=>')) {
+            reaction_mode_symbol = '=>';
+        } else if (reaction.includes('=')) {
+            reaction_mode_symbol = '=';
+        } else {
+            throw new Error(`Invalid reaction format in reaction: ${reaction}`);
+        }
     }
-  }
 
-  const util = new ChemReact(reaction_mode_symbol, components ?? undefined);
-  return util.analyze_reaction({ name, reaction });
+    const util = new ChemReact(reaction_mode_symbol, components ?? undefined);
+    return util.analyze_reaction({ name, reaction });
 }

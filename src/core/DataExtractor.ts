@@ -13,11 +13,8 @@ export class DataExtractor {
     component_key: ComponentKey;
     prop_name: string;
   }): ComponentEquationSource | null {
-    if (typeof this.source.getEquationSource !== 'function') {
-      return null;
-    }
     return (
-      this.source.getEquationSource({
+      this.source.getDataSource({
         component: opts.component,
         componentKey: opts.component_key,
         propName: opts.prop_name as any

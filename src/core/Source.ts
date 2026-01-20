@@ -14,7 +14,7 @@ type RangeLookup = { range: NASARangeType; data: TemperatureRangeData };
 export class Source implements SourceType {
   constructor(public readonly model_source: ModelSource, public readonly component_key: ComponentKey) {}
 
-  getEquationSource(args: {
+  getDataSource(args: {
     component: Component;
     componentKey: ComponentKey | string;
     propName: NASARangeType;
@@ -32,15 +32,15 @@ export class Source implements SourceType {
       return null;
     }
 
-    const parms_values = this.buildParmsValues(rangeMatch.data);
-    if (!parms_values) {
+    const validatedRange = this.validateRangeData(rangeMatch.data, rangeMatch.range);
+    if (!validatedRange) {
       return null;
     }
 
     return {
       component: args.component,
       temperatureRange: rangeMatch.range,
-      source: { parms_values }
+      source: validatedRange
     };
   }
 
@@ -65,38 +65,29 @@ export class Source implements SourceType {
     return [preferredRange, ...baseOrder.filter((range) => range !== preferredRange)];
   }
 
-  private buildParmsValues(rangeData: TemperatureRangeData): Record<string, number> | null {
-    const coefficients: Record<string, number> = {
-      a1: rangeData.a1,
-      a2: rangeData.a2,
-      a3: rangeData.a3,
-      a4: rangeData.a4,
-      a5: rangeData.a5,
-      a6: rangeData.a6,
-      a7: rangeData.a7
-    };
+  private validateRangeData(
+    rangeData: TemperatureRangeData,
+    range: NASARangeType
+  ): TemperatureRangeData | null {
+    const baseKeys = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'MW'] as const;
+    const nasa9Keys = ['b1', 'b2'] as const;
+    const metadataKeys = [
+      'EnFo_IG',
+      'dEnFo_IG_298',
+      'Tmin',
+      'Tmax',
+      'phase_flag'
+    ] as const;
 
-    if ('b1' in rangeData && 'b2' in rangeData && rangeData.b1 !== undefined && rangeData.b2 !== undefined) {
-      coefficients.b1 = rangeData.b1;
-      coefficients.b2 = rangeData.b2;
-    }
+    const required = range.startsWith('nasa9')
+      ? [...baseKeys, ...nasa9Keys, ...metadataKeys]
+      : [...baseKeys, ...metadataKeys];
 
-    const metadata: Record<string, number> = {
-      MW: rangeData.MW,
-      EnFo_IG: rangeData.EnFo_IG,
-      dEnFo_IG_298: rangeData.dEnFo_IG_298,
-      Tmin: rangeData.Tmin,
-      Tmax: rangeData.Tmax,
-      phase_flag: rangeData.phase_flag
-    };
+    const hasMissing = required.some((key) => {
+      const value = (rangeData as any)[key];
+      return value === undefined || Number.isNaN(Number(value));
+    });
 
-    const missing = Object.values(coefficients).some(
-      (value) => value === undefined || Number.isNaN(Number(value))
-    );
-    if (missing) {
-      return null;
-    }
-
-    return { ...metadata, ...coefficients };
+    return hasMissing ? null : rangeData;
   }
 }

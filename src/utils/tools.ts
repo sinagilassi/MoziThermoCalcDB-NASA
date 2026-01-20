@@ -9,21 +9,24 @@ type Coefficients = NASA7Coefficients | NASA9Coefficients;
 /**
  * Ensures required coefficient keys exist; returns a narrowed subset.
  */
-export function requireCoeffs<T extends Record<string, unknown>, K extends keyof T>(
+export function requireCoeffs<T extends object, K extends PropertyKey>(
   coeffs: T,
   required: readonly K[]
-): Pick<T, K> {
-  const missing = required.filter((k) => coeffs[k] === undefined);
+): Record<string, number> {
+  const missing = required.filter((k) => {
+    const value = (coeffs as any)[k];
+    return value === undefined || value === null || Number.isNaN(Number(value));
+  });
   if (missing.length) {
     throw new Error(
       `Missing coefficients: ${missing.join(', ')}. Required: ${required.join(', ')}`
     );
   }
-  const subset: Partial<T> = {};
+  const subset: Record<string, number> = {};
   required.forEach((k) => {
-    subset[k] = coeffs[k];
+    subset[k as string] = Number((coeffs as any)[k]);
   });
-  return subset as Pick<T, K>;
+  return subset;
 }
 
 /**

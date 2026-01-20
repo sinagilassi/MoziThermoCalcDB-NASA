@@ -1,10 +1,6 @@
 import { Component, NASA7Coefficients, NASA9Coefficients, Temperature } from './models';
 import { ComponentKey, NASARangeType } from './constants';
 
-export interface TableEquation {
-  parms_values: Record<string, number>;
-}
-
 interface NASABaseData {
   Name: string;
   Formula: string;
@@ -37,11 +33,11 @@ export type CompoundTemperatureRanges = Partial<Record<NASARangeType, Temperatur
 export interface ComponentEquationSource {
   component: Component;
   temperatureRange: NASARangeType;
-  source: TableEquation;
+  source: TemperatureRangeData;
 }
 
 export interface Source {
-  getEquationSource?: (args: {
+  getDataSource: (args: {
     component: Component;
     componentKey: ComponentKey | string;
     propName: NASARangeType;

@@ -16,7 +16,7 @@ import { Cp_IG_NASA9_polynomial, Cp_IG_NASA7_polynomial } from '../thermo/heatCa
 import { requireCoeffs, toMassBasis } from '../utils/tools';
 import { setComponentId } from '../utils/component';
 import { BasisType, ComponentKey, NASARangeType, NASAType } from '../types/constants';
-import { ComponentEquationSource, Source } from '../types/external';
+import { ComponentEquationSource, Source, TemperatureRangeData } from '../types/external';
 import { Component, CustomProp, Temperature } from '../types/models';
 
 const REQ_COEFFS_NASA7 = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7'] as const;
@@ -29,12 +29,12 @@ export class HSG extends DataExtractor {
   component: Component;
   component_key: ComponentKey;
 
-  nasa9_200_1000_coefficients?: Record<string, number> | null;
-  nasa9_1000_6000_coefficients?: Record<string, number> | null;
-  nasa9_6000_20000_coefficients?: Record<string, number> | null;
-  nasa7_200_1000_coefficients?: Record<string, number> | null;
-  nasa7_1000_6000_coefficients?: Record<string, number> | null;
-  nasa7_6000_20000_coefficients?: Record<string, number> | null;
+  nasa9_200_1000_coefficients?: TemperatureRangeData | null;
+  nasa9_1000_6000_coefficients?: TemperatureRangeData | null;
+  nasa9_6000_20000_coefficients?: TemperatureRangeData | null;
+  nasa7_200_1000_coefficients?: TemperatureRangeData | null;
+  nasa7_1000_6000_coefficients?: TemperatureRangeData | null;
+  nasa7_6000_20000_coefficients?: TemperatureRangeData | null;
 
   private _props?: Record<string, number> | null;
 
@@ -75,7 +75,7 @@ export class HSG extends DataExtractor {
     this._props = value;
   }
 
-  private _extract_nasa_coefficients(prop_name: NASARangeType): Record<string, number> | null {
+  private _extract_nasa_coefficients(prop_name: NASARangeType): TemperatureRangeData | null {
     const eq_src: ComponentEquationSource | null = this._get_equation_source({
       component: this.component,
       component_key: this.component_key,
@@ -84,11 +84,10 @@ export class HSG extends DataExtractor {
     if (!eq_src) {
       return null;
     }
-    const equation = eq_src.source;
-    return equation.parms_values;
+    return eq_src.source;
   }
 
-  private _set_props(coeffs: Record<string, number>): Record<string, number> | null {
+  private _set_props(coeffs: TemperatureRangeData): Record<string, number> | null {
     try {
       return requireCoeffs(coeffs, REQ_PROPS);
     } catch {
@@ -97,7 +96,7 @@ export class HSG extends DataExtractor {
   }
 
   private _set_nasa_coefficients(nasa_type: NASARangeType): Record<string, number> | null {
-    let coeffs: Record<string, number> | null | undefined;
+    let coeffs: TemperatureRangeData | null | undefined;
     let pack: Record<string, number> | null = null;
 
     try {
