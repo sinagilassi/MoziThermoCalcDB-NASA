@@ -14,7 +14,7 @@ out/
 *.tsbuildinfo
 
 # IDE
-.vscode/
+# .vscode/
 .idea/
 *.swp
 *.swo
