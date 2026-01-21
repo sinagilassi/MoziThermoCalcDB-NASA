@@ -120,17 +120,33 @@ logAndCapture('Cp(T=298.15 K, mass):', cp_ch4_298_mass);
 // NOTE: CO2 example
 console.log('\n=== Species properties for CO2 (carbon dioxide, gas) ===');
 results.push('=== Species properties for CO2 (carbon dioxide, gas) ===');
-const co2_1500 = H_T({ component: carbon_dioxide, temperature: temperature1500, model_source: component_model_source });
-logAndCapture('H(T=1500 K):', co2_1500);
+const co2_1500 = H_T({
+    component: carbon_dioxide, temperature: {
+        value: 300, unit: 'K'
+    }, model_source: component_model_source
+});
+logAndCapture('H(T=300 K):', co2_1500);
 
-const s_co2_1500 = S_T({ component: carbon_dioxide, temperature: temperature1500, model_source: component_model_source });
-logAndCapture('S(T=1500 K):', s_co2_1500);
+const s_co2_1500 = S_T({
+    component: carbon_dioxide, temperature: {
+        value: 400, unit: 'K'
+    }, model_source: component_model_source
+});
+logAndCapture('S(T=400 K):', s_co2_1500);
 
-const g_co2_1500 = G_T({ component: carbon_dioxide, temperature: temperature1500, model_source: component_model_source });
-logAndCapture('G(T=1500 K):', g_co2_1500);
+const g_co2_1500 = G_T({
+    component: carbon_dioxide, temperature: {
+        value: 500, unit: 'K'
+    }, model_source: component_model_source
+});
+logAndCapture('G(T=500 K):', g_co2_1500);
 
-const cp_co2_298_molar = Cp_T({ component: carbon_dioxide, temperature: temperature298, model_source: component_model_source, basis: 'molar' });
-logAndCapture('Cp(T=298.15 K, molar):', cp_co2_298_molar);
+const cp_co2_298_molar = Cp_T({
+    component: carbon_dioxide, temperature: {
+        value: 600, unit: 'K'
+    }, model_source: component_model_source, basis: 'molar'
+});
+logAndCapture('Cp(T=600 K, molar):', cp_co2_298_molar);
 
 const cp_co2_298_mass = Cp_T({ component: carbon_dioxide, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
 logAndCapture('Cp(T=298.15 K, mass):', cp_co2_298_mass);
