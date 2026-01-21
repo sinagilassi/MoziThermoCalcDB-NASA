@@ -1,3 +1,4 @@
+// import libs
 import { HSG } from './core/HSG';
 import { HSGs } from './core/HSGs';
 import { RXNAdapter } from './reactions/RXNAdapter';
@@ -16,6 +17,8 @@ import { ModelSource, Reaction } from './types/external';
 import { selectNasaType } from './utils/tools';
 import { Source } from './core/Source';
 
+
+// NOTE: helper to build reaction context
 function buildReactionContext(opts: {
   reaction: Reaction;
   model_source: ModelSource;
@@ -29,6 +32,17 @@ function buildReactionContext(opts: {
   return { rxn_adapter, hsgs };
 }
 
+/**
+ * SECTION: Calculate enthalpy at given temperature for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate enthalpy for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns CustomProp | null - The calculated absolute enthalpy value or null if calculation fails
+ */
 export function H_T(opts: {
   component: Component;
   temperature: Temperature;
@@ -70,6 +84,17 @@ export function H_T(opts: {
   return hsg.calc_absolute_enthalpy(temperature, nasa_type_selected);
 }
 
+/**
+ * SECTION: Calculate absolute entropy at given temperature for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate entropy for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns CustomProp | null - The calculated absolute entropy value or null if calculation fails
+ */
 export function S_T(opts: {
   component: Component;
   temperature: Temperature;
@@ -111,6 +136,17 @@ export function S_T(opts: {
   return hsg.calc_absolute_entropy(temperature, nasa_type_selected);
 }
 
+/**
+ * SECTION: Calculate Gibbs free energy at given temperature for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate Gibbs free energy for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns CustomProp | null - The calculated Gibbs free energy value or null if calculation fails
+ */
 export function G_T(opts: {
   component: Component;
   temperature: Temperature;
@@ -152,6 +188,17 @@ export function G_T(opts: {
   return hsg.calc_gibbs_free_energy(temperature, nasa_type_selected);
 }
 
+/**
+ * SECTION: Calculate heat capacity at constant pressure at given temperature for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate heat capacity for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns CustomProp | null - The calculated heat capacity value or null if calculation fails
+ */
 export function Cp_T(opts: {
   component: Component;
   temperature: Temperature;
@@ -193,6 +240,16 @@ export function Cp_T(opts: {
   return hsg.calc_heat_capacity(temperature, nasa_type_selected);
 }
 
+/**
+ * SECTION: Calculate standard Gibbs free energy of reaction at given temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated standard Gibbs free energy of reaction or null if calculation fails
+ */
 export function dG_rxn_STD(opts: {
   reaction: Reaction;
   temperature: Temperature;
@@ -209,6 +266,16 @@ export function dG_rxn_STD(opts: {
   return rxn_adapter.dG_rxn_std({ G_i_IG });
 }
 
+/**
+ * SECTION: Calculate standard entropy of reaction at given temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated standard entropy of reaction or null if calculation fails
+ */
 export function dS_rxn_STD(opts: {
   reaction: Reaction;
   temperature: Temperature;
@@ -225,6 +292,16 @@ export function dS_rxn_STD(opts: {
   return rxn_adapter.dS_rxn_std({ S_i_IG });
 }
 
+/**
+ * SECTION: Calculate standard enthalpy of reaction at given temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated standard enthalpy of reaction or null if calculation fails
+ */
 export function dH_rxn_STD(opts: {
   reaction: Reaction;
   temperature: Temperature;
@@ -241,6 +318,16 @@ export function dH_rxn_STD(opts: {
   return rxn_adapter.dH_rxn_std({ H_i_IG });
 }
 
+/**
+ * SECTION: Calculate equilibrium constant at given temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated equilibrium constant or null if calculation fails
+ */
 export function Keq(opts: {
   reaction: Reaction;
   temperature: Temperature;
@@ -260,6 +347,16 @@ export function Keq(opts: {
   return rxn_adapter.Keq({ dG_rxn_STD: dG, temperature });
 }
 
+/**
+ * SECTION: Calculate equilibrium constant at given temperature using Van't Hoff shortcut method
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated equilibrium constant using Van't Hoff approximation or null if calculation fails
+ */
 export function Keq_vh_shortcut(opts: {
   reaction: Reaction;
   temperature: Temperature;
