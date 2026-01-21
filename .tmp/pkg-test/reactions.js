@@ -1,6 +1,6 @@
 // .tmp/pkg-test/reactions.js
 // Run with: node reactions.js
-const { dH_rxn_STD, dS_rxn_STD, dG_rxn_STD, Keq_app, Keq_vh_shortcut_app } = require('mozithermocalcdb-nasa');
+const { dH_rxn_STD, dS_rxn_STD, dG_rxn_STD, Keq, Keq_vh_shortcut } = require('mozithermocalcdb-nasa');
 
 // Component definitions
 const hydrogen = { name: 'dihydrogen', formula: 'H2', state: 'g' };
@@ -58,5 +58,5 @@ console.log('\n=== Methane combustion @ 1500 K ===');
 console.log('dH_rxn_STD:', dH_rxn_STD({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
 console.log('dS_rxn_STD:', dS_rxn_STD({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
 console.log('dG_rxn_STD:', dG_rxn_STD({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
-console.log('Keq:', Keq_app({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
-console.log("Keq (van't Hoff shortcut):", Keq_vh_shortcut_app({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
+console.log('Keq:', Keq({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
+console.log("Keq (van't Hoff shortcut):", Keq_vh_shortcut({ reaction: combustion, temperature: T, model_source, component_key: 'Name-Formula' }));
