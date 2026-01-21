@@ -20,8 +20,9 @@ import { loadExampleModelSource, buildComponentModelSource } from './modelSource
 const hydrogen: Component = { name: 'dihydrogen', formula: 'H2', state: 'g' };
 const oxygen: Component = { name: 'dioxygen', formula: 'O2', state: 'g' };
 const water: Component = { name: 'dihydrogen monoxide', formula: 'H2O', state: 'g' };
+const methane: Component = { name: 'methane', formula: 'CH4', state: 'g' };
 // >> components
-const components: Component[] = [hydrogen, oxygen, water];
+const components: Component[] = [hydrogen, oxygen, water, methane];
 
 // SECTION: Create ModelSource from NASA9 CSVs
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -48,6 +49,7 @@ const logAndCapture = (...args: unknown[]) => {
     console.log(...args);
 };
 
+// NOTE: H2 example
 console.log('=== Species properties for H2 (dihydrogen, gas) ===');
 results.push('=== Species properties for H2 (dihydrogen, gas) ===');
 const h_1500 = H_T({ component: hydrogen, temperature: temperature1500, model_source: component_model_source });
@@ -64,6 +66,43 @@ logAndCapture('Cp(T=298.15 K, molar):', cp_298_molar);
 
 const cp_298_mass = Cp_T({ component: hydrogen, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
 logAndCapture('Cp(T=298.15 K, mass):', cp_298_mass);
+
+// NOTE: H2O example
+console.log('\n=== Species properties for H2O (dihydrogen monoxide, gas) ===');
+results.push('=== Species properties for H2O (dihydrogen monoxide, gas) ===');
+const h2o_1500 = H_T({ component: water, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('H(T=1500 K):', h2o_1500);
+
+const s2o_1500 = S_T({ component: water, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('S(T=1500 K):', s2o_1500);
+
+const g2o_1500 = G_T({ component: water, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('G(T=1500 K):', g2o_1500);
+
+const cp2o_298_molar = Cp_T({ component: water, temperature: temperature298, model_source: component_model_source, basis: 'molar' });
+logAndCapture('Cp(T=298.15 K, molar):', cp2o_298_molar);
+
+const cp2o_298_mass = Cp_T({ component: water, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
+logAndCapture('Cp(T=298.15 K, mass):', cp2o_298_mass);
+
+
+// NOTE: CH4 example
+console.log('\n=== Species properties for CH4 (methane, gas) ===');
+results.push('=== Species properties for CH4 (methane, gas) ===');
+const ch4_1500 = H_T({ component: methane, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('H(T=1500 K):', ch4_1500);
+
+const s_ch4_1500 = S_T({ component: methane, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('S(T=1500 K):', s_ch4_1500);
+
+const g_ch4_1500 = G_T({ component: methane, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('G(T=1500 K):', g_ch4_1500);
+
+const cp_ch4_298_molar = Cp_T({ component: methane, temperature: temperature298, model_source: component_model_source, basis: 'molar' });
+logAndCapture('Cp(T=298.15 K, molar):', cp_ch4_298_molar);
+
+const cp_ch4_298_mass = Cp_T({ component: methane, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
+logAndCapture('Cp(T=298.15 K, mass):', cp_ch4_298_mass);
 
 // --- Reaction examples ---
 // Reaction: 2 H2(g) + O2(g) => 2 H2O(g)
