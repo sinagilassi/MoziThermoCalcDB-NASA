@@ -9,6 +9,7 @@
  * Run with: `npx ts-node --esm --experimental-specifier-resolution=node examples/appUsage.ts`
  */
 import path from 'node:path';
+import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { H_T, S_T, G_T, Cp_T, dH_rxn_STD, dS_rxn_STD, dG_rxn_STD, Keq, Keq_vh_shortcut } from '../src/app.js';
 import type { Component, Temperature } from '../src/types/models.js';
@@ -38,21 +39,31 @@ const component_model_source = await buildComponentModelSource(
 const temperature1500: Temperature = { value: 1500, unit: 'K' };
 const temperature298: Temperature = { value: 298.15, unit: 'K' };
 
+const results: string[] = [];
+const logAndCapture = (...args: unknown[]) => {
+    const line = args
+        .map((arg) => (typeof arg === 'string' ? arg : JSON.stringify(arg)))
+        .join(' ');
+    results.push(line);
+    console.log(...args);
+};
+
 console.log('=== Species properties for H2 (dihydrogen, gas) ===');
+results.push('=== Species properties for H2 (dihydrogen, gas) ===');
 const h_1500 = H_T({ component: hydrogen, temperature: temperature1500, model_source: component_model_source });
-console.log('H(T=1500 K):', h_1500);
+logAndCapture('H(T=1500 K):', h_1500);
 
 const s_1500 = S_T({ component: hydrogen, temperature: temperature1500, model_source: component_model_source });
-console.log('S(T=1500 K):', s_1500);
+logAndCapture('S(T=1500 K):', s_1500);
 
 const g_1500 = G_T({ component: hydrogen, temperature: temperature1500, model_source: component_model_source });
-console.log('G(T=1500 K):', g_1500);
+logAndCapture('G(T=1500 K):', g_1500);
 
 const cp_298_molar = Cp_T({ component: hydrogen, temperature: temperature298, model_source: component_model_source, basis: 'molar' });
-console.log('Cp(T=298.15 K, molar):', cp_298_molar);
+logAndCapture('Cp(T=298.15 K, molar):', cp_298_molar);
 
 const cp_298_mass = Cp_T({ component: hydrogen, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
-console.log('Cp(T=298.15 K, mass):', cp_298_mass);
+logAndCapture('Cp(T=298.15 K, mass):', cp_298_mass);
 
 // --- Reaction examples ---
 // Reaction: 2 H2(g) + O2(g) => 2 H2O(g)
@@ -68,17 +79,22 @@ const reaction: Reaction = {
 const reactionTemperature: Temperature = { value: 1200, unit: 'K' };
 
 console.log('\n=== Reaction properties for 2H2 + O2 -> 2H2O (gas) at 1200 K ===');
+results.push('=== Reaction properties for 2H2 + O2 -> 2H2O (gas) at 1200 K ===');
 const dH = dH_rxn_STD({ reaction, temperature: reactionTemperature, model_source: component_model_source });
-console.log('dH_rxn_STD:', dH);
+logAndCapture('dH_rxn_STD:', dH);
 
 const dS = dS_rxn_STD({ reaction, temperature: reactionTemperature, model_source: component_model_source });
-console.log('dS_rxn_STD:', dS);
+logAndCapture('dS_rxn_STD:', dS);
 
 const dG = dG_rxn_STD({ reaction, temperature: reactionTemperature, model_source: component_model_source });
-console.log('dG_rxn_STD:', dG);
+logAndCapture('dG_rxn_STD:', dG);
 
 const KeqVal = Keq({ reaction, temperature: reactionTemperature, model_source: component_model_source });
-console.log('Keq:', KeqVal);
+logAndCapture('Keq:', KeqVal);
 
 const KeqVH = Keq_vh_shortcut({ reaction, temperature: reactionTemperature, model_source: component_model_source });
-console.log("Keq (van't Hoff shortcut):", KeqVH);
+logAndCapture("Keq (van't Hoff shortcut):", KeqVH);
+
+const outputFile = path.join(__dirname, 'appUsage-2-results.txt');
+await writeFile(outputFile, results.join('\n'), 'utf-8');
+console.log(`\nResults written to ${outputFile}`);
