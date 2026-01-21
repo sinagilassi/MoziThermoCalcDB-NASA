@@ -1,4 +1,4 @@
-import { Component, NASA7Coefficients, NASA9Coefficients, Temperature } from './models';
+import { Component, NASA7Coefficients, NASA9Coefficients } from './models';
 import { ComponentKey, NASARangeType } from './constants';
 
 interface NASABaseData {
