@@ -13,23 +13,18 @@ export type {
 // SECTION: Utils
 export * from './utils';
 
-// SECTION: Core classes
+// SECTION: Core
 export * from './core/HSG';
-export * from './core/HSGs';
-export * from './core/DataExtractor';
-export { Source } from './core/Source';
 
 // SECTION: Thermo
 export * from './thermo';
 
-// SECTION: Reactions (avoid Keq conflict with app helper)
+// SECTION: Reactions
 export * from './reactions/RXNAdapter';
 export * from './reactions/RXNAnalyzer';
 export * from './reactions/RXN';
-export { Keq, Keq_vh, Keq_vh_shortcut } from './reactions/source';
-export { _Keq, _Keq_VH_Shortcut } from './reactions/reactions';
 
-// SECTION: App-level helpers (alias Keq to avoid clash)
+// SECTION: App-level helpers
 export {
     H_T,
     S_T,
