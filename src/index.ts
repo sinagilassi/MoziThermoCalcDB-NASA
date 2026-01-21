@@ -1,4 +1,4 @@
-// Types (avoid name collision with core Source)
+// SECTION: Types (avoid name collision with core Source)
 export * from './types/constants';
 export * from './types/models';
 export type {
@@ -10,26 +10,26 @@ export type {
     Source as SourceSpec
 } from './types/external';
 
-// Utils
+// SECTION: Utils
 export * from './utils';
 
-// Core classes
+// SECTION: Core classes
 export * from './core/HSG';
 export * from './core/HSGs';
 export * from './core/DataExtractor';
 export { Source } from './core/Source';
 
-// Thermo
+// SECTION: Thermo
 export * from './thermo';
 
-// Reactions (avoid Keq conflict with app helper)
+// SECTION: Reactions (avoid Keq conflict with app helper)
 export * from './reactions/RXNAdapter';
 export * from './reactions/RXNAnalyzer';
 export * from './reactions/RXN';
 export { Keq, Keq_vh, Keq_vh_shortcut } from './reactions/source';
 export { _Keq, _Keq_VH_Shortcut } from './reactions/reactions';
 
-// App-level helpers (alias Keq to avoid clash)
+// SECTION: App-level helpers (alias Keq to avoid clash)
 export {
     H_T,
     S_T,
