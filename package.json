@@ -32,7 +32,11 @@
     "build": "rollup -c",
     "test": "npm run build && node --no-deprecation node_modules/vitest/vitest.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "prepack": "npm run build",
+    "pack:check": "npm pack --dry-run",
+    "pack:make": "npm pack",
+    "publish:public": "npm publish"
   },
   "dependencies": {
     "zod": "^3.22.0"
