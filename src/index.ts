@@ -33,6 +33,6 @@ export {
     dG_rxn_STD,
     dS_rxn_STD,
     dH_rxn_STD,
-    Keq as Keq_app,
-    Keq_vh_shortcut as Keq_vh_shortcut_app
+    Keq,
+    Keq_vh_shortcut
 } from './app';
