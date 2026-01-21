@@ -1,0 +1,42 @@
+=== Species properties for H2 (dihydrogen, gas) ===
+H(T=1500 K): {"value":36288.107022979326,"unit":"J/mol"}
+S(T=1500 K): {"value":178.8447323401817,"unit":"J/mol.K"}
+G(T=1500 K): {"value":-231978.99148729324,"unit":"J/mol"}
+Cp(T=298.15 K, molar): {"value":28.815965417284122,"unit":"J/mol.K"}
+Cp(T=298.15 K, mass): {"value":14294.484501698573,"unit":"J/kg.K"}
+=== Species properties for H2O (dihydrogen monoxide, gas) ===
+H(T=1500 K): {"value":-193620.97639214367,"unit":"J/mol"}
+S(T=1500 K): {"value":250.65477143650693,"unit":"J/mol.K"}
+G(T=1500 K): {"value":-569603.1335469041,"unit":"J/mol"}
+Cp(T=298.15 K, molar): {"value":33.590300159961785,"unit":"J/mol.K"}
+Cp(T=298.15 K, mass): {"value":1864.5449951353396,"unit":"J/kg.K"}
+=== Species properties for CH4 (methane, gas) ===
+H(T=1500 K): {"value":5428.920385274911,"unit":"J/mol"}
+S(T=1500 K): {"value":281.6155957914548,"unit":"J/mol.K"}
+G(T=1500 K): {"value":-416994.47330190724,"unit":"J/mol"}
+Cp(T=298.15 K, molar): {"value":35.706490790004686,"unit":"J/mol.K"}
+Cp(T=298.15 K, mass): {"value":2225.7490927204863,"unit":"J/kg.K"}
+=== Species properties for CO2 (carbon dioxide, gas) ===
+H(T=1500 K): {"value":-331798.40611899836,"unit":"J/mol"}
+S(T=1500 K): {"value":292.197476529045,"unit":"J/mol.K"}
+G(T=1500 K): {"value":-770094.6209125658,"unit":"J/mol"}
+Cp(T=298.15 K, molar): {"value":37.135556709311224,"unit":"J/mol.K"}
+Cp(T=298.15 K, mass): {"value":843.8077394496921,"unit":"J/kg.K"}
+=== Species properties for C2H6O (ethanol, gas) ===
+H(T=1500 K): {"value":-79716.55516060728,"unit":"J/mol"}
+S(T=1500 K): {"value":467.3354573773985,"unit":"J/mol.K"}
+G(T=1500 K): {"value":-780719.741226705,"unit":"J/mol"}
+Cp(T=298.15 K, molar): {"value":65.31764829526033,"unit":"J/mol.K"}
+Cp(T=298.15 K, mass): {"value":1417.839377570856,"unit":"J/kg.K"}
+=== Reaction properties for 2H2 + O2 -> 2H2O (gas) at 1200 K ===
+dH_rxn_STD: {"value":-497975.95496256347,"unit":"J/mol"}
+dS_rxn_STD: {"value":-112.62290444792342,"unit":"J/mol.K"}
+dG_rxn_STD: {"value":-362828.4696250552,"unit":"J/mol"}
+Keq: {"value":6211603267351919,"unit":"dimensionless"}
+Keq (van't Hoff shortcut): {"value":25838972368941520,"unit":"dimensionless"}
+=== Reaction properties for CO + H2O -> CO2 + H2 (gas) at 398.15 K ===
+dH_rxn_STD: {"value":-40640.598455531974,"unit":"J/mol"}
+dS_rxn_STD: {"value":-40.56815645513373,"unit":"J/mol.K"}
+dG_rxn_STD: {"value":-24488.38696292042,"unit":"J/mol"}
+Keq: {"value":1631.7411546012158,"unit":"dimensionless"}
+Keq (van't Hoff shortcut): {"value":1598.3332179188676,"unit":"dimensionless"}

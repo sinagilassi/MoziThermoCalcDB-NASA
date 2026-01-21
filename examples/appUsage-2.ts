@@ -21,13 +21,26 @@ const hydrogen: Component = { name: 'dihydrogen', formula: 'H2', state: 'g' };
 const oxygen: Component = { name: 'dioxygen', formula: 'O2', state: 'g' };
 const water: Component = { name: 'dihydrogen monoxide', formula: 'H2O', state: 'g' };
 const methane: Component = { name: 'methane', formula: 'CH4', state: 'g' };
+const carbon_monoxide: Component = { name: 'carbon monoxide', formula: 'CO', state: 'g' };
+const carbon_dioxide: Component = { name: 'carbon dioxide', formula: 'CO2', state: 'g' };
+const ethanol: Component = { name: 'ethanol', formula: 'C2H6O', state: 'g' };
+const methanol: Component = { name: 'methanol', formula: 'CH4O', state: 'g' };
 // >> components
-const components: Component[] = [hydrogen, oxygen, water, methane];
+const components: Component[] = [
+    hydrogen,
+    oxygen,
+    water,
+    methane,
+    carbon_monoxide,
+    carbon_dioxide,
+    ethanol,
+    methanol
+];
 
 // SECTION: Create ModelSource from NASA9 CSVs
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const dataDir = path.join(__dirname, '..', 'private');
+const dataDir = path.join(__dirname);
 const model_source = await loadExampleModelSource(dataDir);
 
 // NOTE: You can also build a ModelSource with only specific components if desired.
@@ -104,9 +117,46 @@ logAndCapture('Cp(T=298.15 K, molar):', cp_ch4_298_molar);
 const cp_ch4_298_mass = Cp_T({ component: methane, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
 logAndCapture('Cp(T=298.15 K, mass):', cp_ch4_298_mass);
 
-// --- Reaction examples ---
-// Reaction: 2 H2(g) + O2(g) => 2 H2O(g)
+// NOTE: CO2 example
+console.log('\n=== Species properties for CO2 (carbon dioxide, gas) ===');
+results.push('=== Species properties for CO2 (carbon dioxide, gas) ===');
+const co2_1500 = H_T({ component: carbon_dioxide, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('H(T=1500 K):', co2_1500);
 
+const s_co2_1500 = S_T({ component: carbon_dioxide, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('S(T=1500 K):', s_co2_1500);
+
+const g_co2_1500 = G_T({ component: carbon_dioxide, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('G(T=1500 K):', g_co2_1500);
+
+const cp_co2_298_molar = Cp_T({ component: carbon_dioxide, temperature: temperature298, model_source: component_model_source, basis: 'molar' });
+logAndCapture('Cp(T=298.15 K, molar):', cp_co2_298_molar);
+
+const cp_co2_298_mass = Cp_T({ component: carbon_dioxide, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
+logAndCapture('Cp(T=298.15 K, mass):', cp_co2_298_mass);
+
+// NOTE: C2H6O example
+console.log('\n=== Species properties for C2H6O (ethanol, gas) ===');
+results.push('=== Species properties for C2H6O (ethanol, gas) ===');
+const c2h6o_1500 = H_T({ component: ethanol, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('H(T=1500 K):', c2h6o_1500);
+
+const s_c2h6o_1500 = S_T({ component: ethanol, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('S(T=1500 K):', s_c2h6o_1500);
+
+const g_c2h6o_1500 = G_T({ component: ethanol, temperature: temperature1500, model_source: component_model_source });
+logAndCapture('G(T=1500 K):', g_c2h6o_1500);
+
+const cp_c2h6o_298_molar = Cp_T({ component: ethanol, temperature: temperature298, model_source: component_model_source, basis: 'molar' });
+logAndCapture('Cp(T=298.15 K, molar):', cp_c2h6o_298_molar);
+
+const cp_c2h6o_298_mass = Cp_T({ component: ethanol, temperature: temperature298, model_source: component_model_source, basis: 'mass' });
+logAndCapture('Cp(T=298.15 K, mass):', cp_c2h6o_298_mass);
+
+// =============================================
+// SECTION: --- Reaction examples ---
+// =============================================
+// NOTE: Reaction: 2 H2(g) + O2(g) => 2 H2O(g)
 
 // RXNAnalyzer derives stoichiometry; keys use "Formula-State" because app.ts requests reaction_ids=true.
 const reaction: Reaction = {
@@ -134,6 +184,32 @@ logAndCapture('Keq:', KeqVal);
 const KeqVH = Keq_vh_shortcut({ reaction, temperature: reactionTemperature, model_source: component_model_source });
 logAndCapture("Keq (van't Hoff shortcut):", KeqVH);
 
-const outputFile = path.join(__dirname, 'appUsage-2-results.txt');
-await writeFile(outputFile, results.join('\n'), 'utf-8');
-console.log(`\nResults written to ${outputFile}`);
+
+// NOTE: Reaction WGSR
+const reaction_2: Reaction = {
+    name: 'water-gas-shift-reaction',
+    reaction: 'CO(g) + H2O(g) => CO2(g) + H2(g)',
+    components: [hydrogen, water, carbon_dioxide, carbon_monoxide]
+}
+
+const reactionTemperature_2: Temperature = { value: 398.15, unit: 'K' };
+console.log('\n=== Reaction properties for CO + H2O -> CO2 + H2 (gas) at 398.15 K ===');
+results.push('=== Reaction properties for CO + H2O -> CO2 + H2 (gas) at 398.15 K ===');
+const dH_2 = dH_rxn_STD({ reaction: reaction_2, temperature: reactionTemperature_2, model_source: component_model_source });
+logAndCapture('dH_rxn_STD:', dH_2);
+
+const dS_2 = dS_rxn_STD({ reaction: reaction_2, temperature: reactionTemperature_2, model_source: component_model_source });
+logAndCapture('dS_rxn_STD:', dS_2);
+
+const dG_2 = dG_rxn_STD({ reaction: reaction_2, temperature: reactionTemperature_2, model_source: component_model_source });
+logAndCapture('dG_rxn_STD:', dG_2);
+
+const KeqVal_2 = Keq({ reaction: reaction_2, temperature: reactionTemperature_2, model_source: component_model_source });
+logAndCapture('Keq:', KeqVal_2);
+
+const KeqVH_2 = Keq_vh_shortcut({ reaction: reaction_2, temperature: reactionTemperature_2, model_source: component_model_source });
+logAndCapture("Keq (van't Hoff shortcut):", KeqVH_2);
+
+const outputFile_2 = path.join(__dirname, 'appUsage-2-results-2.txt');
+await writeFile(outputFile_2, results.join('\n'), 'utf-8');
+console.log(`\nResults written to ${outputFile_2}`);
