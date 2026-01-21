@@ -22,6 +22,7 @@ const external = (id) => {
 };
 
 export default [
+  // SECTION: Node and ESM build
   {
     input: entry,
     output: [
@@ -35,6 +36,7 @@ export default [
     ],
     external
   },
+  // SECTION: Browser ESM build
   {
     input: entry,
     output: [{ file: 'dist/index.browser.mjs', format: 'esm', sourcemap: true }],
@@ -45,6 +47,7 @@ export default [
     ],
     external
   },
+  // SECTION: Type declarations
   {
     input: entry,
     output: [{ file: 'dist/index.d.ts', format: 'esm' }],
