@@ -1,6 +1,6 @@
 # MoziThermoCalcDB-NASA
 
-[![npm version](https://badge.fury.io/js/mozithermocalcdb-nasa.svg)](https://www.npmjs.com/package/mozithermocalcdb-nasa)
+[![npm version](https://badge.fury.io/js/mozithermocalcdb-nasa.svg)](https://badge.fury.io/js/mozithermocalcdb-nasa)
 [![npm downloads](https://img.shields.io/npm/dm/mozithermocalcdb-nasa?color=brightgreen)](https://www.npmjs.com/package/mozithermocalcdb-nasa)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
