@@ -17,10 +17,10 @@ G(T=1500 K): {"value":-416994.47330190724,"unit":"J/mol"}
 Cp(T=298.15 K, molar): {"value":35.706490790004686,"unit":"J/mol.K"}
 Cp(T=298.15 K, mass): {"value":2225.7490927204863,"unit":"J/kg.K"}
 === Species properties for CO2 (carbon dioxide, gas) ===
-H(T=1500 K): {"value":-331798.40611899836,"unit":"J/mol"}
-S(T=1500 K): {"value":292.197476529045,"unit":"J/mol.K"}
-G(T=1500 K): {"value":-770094.6209125658,"unit":"J/mol"}
-Cp(T=298.15 K, molar): {"value":37.135556709311224,"unit":"J/mol.K"}
+H(T=300 K): {"value":-393438.9409053566,"unit":"J/mol"}
+S(T=400 K): {"value":225.30793148694562,"unit":"J/mol.K"}
+G(T=500 K): {"value":-502649.138334726,"unit":"J/mol"}
+Cp(T=600 K, molar): {"value":47.3239640257428,"unit":"J/mol.K"}
 Cp(T=298.15 K, mass): {"value":843.8077394496921,"unit":"J/kg.K"}
 === Species properties for C2H6O (ethanol, gas) ===
 H(T=1500 K): {"value":-79716.55516060728,"unit":"J/mol"}
