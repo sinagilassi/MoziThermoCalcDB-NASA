@@ -9,11 +9,15 @@ describe('node imports from built artifacts', () => {
     const cjs = require(path.resolve(__dirname, '..', 'dist', 'index.cjs'));
     expect(typeof cjs.H_T).toBe('function');
     expect(typeof cjs.Keq).toBe('function');
+    expect(typeof cjs.dlnKeq_dT).toBe('function');
+    expect(typeof cjs.equilibrium_temperature).toBe('function');
   });
 
   it('loads ESM bundle and exposes key APIs', async () => {
     const esm = await import(path.resolve(__dirname, '..', 'dist', 'index.mjs'));
     expect(typeof esm.H_T).toBe('function');
     expect(typeof esm.Keq).toBe('function');
+    expect(typeof esm.dlnKeq_dT).toBe('function');
+    expect(typeof esm.equilibrium_temperature).toBe('function');
   });
 });

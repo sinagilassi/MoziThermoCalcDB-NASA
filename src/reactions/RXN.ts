@@ -1,9 +1,9 @@
 import { CustomProp, Temperature } from '@/types/models';
 import { ReactionAnalysis } from './RXNAnalyzer';
 import { ensureEnergy, ensureEntropy, ensureKelvin, toJPerMol } from '@/utils/conversions';
-import { _Keq as KeqThermo, _Keq_VH_Shortcut } from './reactions';
+import { _Keq as KeqThermo, _Keq_VH_Shortcut, _dlnKeq_dT } from './reactions';
 import { R_CONST_J__molK, TEMPERATURE_REF_K } from '@/types/constants';
-import { integrateTrapezoidal } from '@/utils/mathMethods';
+import { bisectRoot, integrateTrapezoidal } from '@/utils/mathMethods';
 
 /**
  * ! RXN handles reaction-level thermodynamics: dH, dG, dS, Keq.
@@ -137,6 +137,51 @@ export class RXN {
         enthalpy_of_reaction_std: toJPerMol(dH_rxn_STD.value, dH_rxn_STD.unit),
         temperature: ensureKelvin(temperature)
       });
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Temperature sensitivity of equilibrium constant
+  dlnKeq_dT(dH_rxn_STD: CustomProp, temperature: Temperature): CustomProp | null {
+    try {
+      return _dlnKeq_dT({
+        enthalpy_of_reaction_std: ensureEnergy(dH_rxn_STD).value,
+        temperature: ensureKelvin(temperature)
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Solve for equilibrium temperature given target Keq
+  equilibrium_temperature(
+    Keq_target: CustomProp,
+    dG_rxn_STD_func: (temperature: Temperature) => CustomProp | null,
+    temperature_bounds: { low: Temperature; high: Temperature },
+    options?: { maxIterations?: number; tolerance?: number }
+  ): Temperature | null {
+    try {
+      if (Keq_target.unit !== 'dimensionless' || Keq_target.value <= 0) {
+        return null;
+      }
+
+      const lowK = ensureKelvin(temperature_bounds.low);
+      const highK = ensureKelvin(temperature_bounds.high);
+      const a = Math.min(lowK, highK);
+      const b = Math.max(lowK, highK);
+
+      const lnK = Math.log(Keq_target.value);
+      const f = (temp: number) => {
+        const dG = dG_rxn_STD_func({ value: temp, unit: 'K' });
+        if (!dG) throw new Error(`ΔG missing at T=${temp}`);
+        return ensureEnergy(dG).value + this.R * temp * lnK;
+      };
+
+      const root = bisectRoot(f, a, b, options?.tolerance ?? 1e-4, options?.maxIterations ?? 100);
+      if (!root) return null;
+
+      return { value: root.value, unit: 'K' };
     } catch {
       return null;
     }

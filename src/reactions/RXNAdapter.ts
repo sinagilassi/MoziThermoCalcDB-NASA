@@ -70,4 +70,30 @@ export class RXNAdapter {
   }): CustomProp | null {
     return this.rxn.Keq_vh_shortcut(Keq_STD, dH_rxn_STD, temperature);
   }
+
+  // SECTION: Temperature sensitivity of equilibrium constant
+  dlnKeq_dT({
+    dH_rxn_STD,
+    temperature
+  }: {
+    dH_rxn_STD: CustomProp;
+    temperature: Temperature;
+  }): CustomProp | null {
+    return this.rxn.dlnKeq_dT(dH_rxn_STD, temperature);
+  }
+
+  // SECTION: Solve for equilibrium temperature given target Keq
+  equilibrium_temperature({
+    Keq_target,
+    dG_rxn_STD_func,
+    temperature_bounds,
+    options
+  }: {
+    Keq_target: CustomProp;
+    dG_rxn_STD_func: (temperature: Temperature) => CustomProp | null;
+    temperature_bounds: { low: Temperature; high: Temperature };
+    options?: { maxIterations?: number; tolerance?: number };
+  }): Temperature | null {
+    return this.rxn.equilibrium_temperature(Keq_target, dG_rxn_STD_func, temperature_bounds, options);
+  }
 }

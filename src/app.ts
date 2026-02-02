@@ -388,3 +388,79 @@ export function Keq_vh_shortcut(opts: {
     temperature
   });
 }
+
+/**
+ * SECTION: Temperature sensitivity of equilibrium constant at given temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated d(lnKeq)/dT or null if calculation fails
+ */
+export function dlnKeq_dT(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const H_i_IG = hsgs.calc_components_hsg(temperature, 'enthalpy', { reaction_ids: true });
+  if (!H_i_IG) return null;
+
+  const dH = rxn_adapter.dH_rxn_std({ H_i_IG });
+  if (!dH) return null;
+
+  return rxn_adapter.dlnKeq_dT({ dH_rxn_STD: dH, temperature });
+}
+
+/**
+ * SECTION: Solve temperature for target equilibrium constant
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.Keq_target - Target equilibrium constant (dimensionless)
+ * @param opts.temperature_bounds - Bracket for root finding
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.options - Solver options
+ * @returns Temperature | null - Temperature where Keq(T)=Keq_target or null if not found
+ */
+export function equilibrium_temperature(opts: {
+  reaction: Reaction;
+  Keq_target: CustomProp;
+  temperature_bounds: { low: Temperature; high: Temperature };
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  options?: { maxIterations?: number; tolerance?: number };
+}): Temperature | null {
+  const {
+    reaction,
+    Keq_target,
+    temperature_bounds,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    options
+  } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+
+  const dG_rxn_STD_func = (temperature: Temperature): CustomProp | null => {
+    const G_i_IG = hsgs.calc_components_hsg(temperature, 'gibbs', { reaction_ids: true });
+    if (!G_i_IG) return null;
+    return rxn_adapter.dG_rxn_std({ G_i_IG });
+  };
+
+  return rxn_adapter.equilibrium_temperature({
+    Keq_target,
+    dG_rxn_STD_func,
+    temperature_bounds,
+    options
+  });
+}

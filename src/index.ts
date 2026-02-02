@@ -36,5 +36,7 @@ export {
     dS_rxn_STD,
     dH_rxn_STD,
     Keq,
-    Keq_vh_shortcut
+    Keq_vh_shortcut,
+    dlnKeq_dT,
+    equilibrium_temperature
 } from './app';

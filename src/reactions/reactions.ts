@@ -43,3 +43,17 @@ export function _Keq_VH_Shortcut(opts: {
   // res
   return { value, unit: 'dimensionless' };
 }
+
+/**
+ * Temperature sensitivity of the equilibrium constant:
+ * ! d(lnKeq)/dT = dH_rxn / (R * T^2)
+ * Universal gas constant R in J/mol.K
+ * @returns d(lnKeq)/dT (1/K)
+ * @param enthalpy_of_reaction_std Enthalpy of reaction (J/mol)
+ * @param temperature Temperature (K)
+ */
+export function _dlnKeq_dT(opts: { enthalpy_of_reaction_std: number; temperature: number }): CustomProp {
+  const { enthalpy_of_reaction_std, temperature } = opts;
+  const value = enthalpy_of_reaction_std / (R_CONST_J__molK * temperature * temperature);
+  return { value, unit: '1/K' };
+}
