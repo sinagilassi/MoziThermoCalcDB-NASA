@@ -35,8 +35,14 @@ export {
     dG_rxn_STD,
     dS_rxn_STD,
     dH_rxn_STD,
+    dCp_rxn_STD,
     Keq,
     Keq_vh_shortcut,
     dlnKeq_dT,
-    equilibrium_temperature
+    equilibrium_temperature,
+    dG_rxn_dT,
+    dlnK_dInvT,
+    equilibrium_temperature_K1,
+    species_contribution_enthalpy,
+    species_contribution_gibbs
 } from './app';

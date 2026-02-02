@@ -11,6 +11,12 @@ describe('node imports from built artifacts', () => {
     expect(typeof cjs.Keq).toBe('function');
     expect(typeof cjs.dlnKeq_dT).toBe('function');
     expect(typeof cjs.equilibrium_temperature).toBe('function');
+    expect(typeof cjs.dG_rxn_dT).toBe('function');
+    expect(typeof cjs.dlnK_dInvT).toBe('function');
+    expect(typeof cjs.equilibrium_temperature_K1).toBe('function');
+    expect(typeof cjs.dCp_rxn_STD).toBe('function');
+    expect(typeof cjs.species_contribution_enthalpy).toBe('function');
+    expect(typeof cjs.species_contribution_gibbs).toBe('function');
   });
 
   it('loads ESM bundle and exposes key APIs', async () => {
@@ -19,5 +25,11 @@ describe('node imports from built artifacts', () => {
     expect(typeof esm.Keq).toBe('function');
     expect(typeof esm.dlnKeq_dT).toBe('function');
     expect(typeof esm.equilibrium_temperature).toBe('function');
+    expect(typeof esm.dG_rxn_dT).toBe('function');
+    expect(typeof esm.dlnK_dInvT).toBe('function');
+    expect(typeof esm.equilibrium_temperature_K1).toBe('function');
+    expect(typeof esm.dCp_rxn_STD).toBe('function');
+    expect(typeof esm.species_contribution_enthalpy).toBe('function');
+    expect(typeof esm.species_contribution_gibbs).toBe('function');
   });
 });

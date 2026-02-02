@@ -1,7 +1,7 @@
 import { CustomProp, Temperature } from '@/types/models';
 import { ReactionAnalysis } from './RXNAnalyzer';
 import { ensureEnergy, ensureEntropy, ensureKelvin, toJPerMol } from '@/utils/conversions';
-import { _Keq as KeqThermo, _Keq_VH_Shortcut, _dlnKeq_dT } from './reactions';
+import { _Keq as KeqThermo, _Keq_VH_Shortcut, _dlnKeq_dT, _dlnK_dInvT } from './reactions';
 import { R_CONST_J__molK, TEMPERATURE_REF_K } from '@/types/constants';
 import { bisectRoot, integrateTrapezoidal } from '@/utils/mathMethods';
 
@@ -75,6 +75,62 @@ export class RXN {
       // res
       return { value: reaction_entropy, unit: 'J/mol.K' };
     } catch (err) {
+      return null;
+    }
+  }
+
+  // SECTION: Calculate heat capacity of reaction
+  dCp_rxn_STD(Cp_i_IG: Record<string, CustomProp>): CustomProp | null {
+    try {
+      let reaction_cp = 0;
+
+      // iterate over reaction stoichiometry
+      for (const [component_id, coeff] of Object.entries(this.reaction.reaction_stoichiometry)) {
+        const prop = Cp_i_IG[component_id];
+        if (!prop) throw new Error(`Component ID '${component_id}' not found in Cp_i_IG dictionary.`);
+        const { value } = ensureEntropy(prop);
+        reaction_cp += coeff * value;
+      }
+
+      // res
+      return { value: reaction_cp, unit: 'J/mol.K' };
+    } catch (err) {
+      return null;
+    }
+  }
+
+  // SECTION: Species contribution to reaction enthalpy (per-species H_i)
+  species_contribution_enthalpy(H_i_IG: Record<string, CustomProp>): Record<string, CustomProp> | null {
+    try {
+      const contributions: Record<string, CustomProp> = {};
+
+      for (const component_id of Object.keys(this.reaction.reaction_stoichiometry)) {
+        const prop = H_i_IG[component_id];
+        if (!prop) throw new Error(`Component ID '${component_id}' not found in H_i_IG dictionary.`);
+        const { value } = ensureEnergy(prop);
+        contributions[component_id] = { value, unit: 'J/mol' };
+      }
+
+      return Object.keys(contributions).length ? contributions : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Species contribution to reaction Gibbs energy (per-species G_i)
+  species_contribution_gibbs(G_i_IG: Record<string, CustomProp>): Record<string, CustomProp> | null {
+    try {
+      const contributions: Record<string, CustomProp> = {};
+
+      for (const component_id of Object.keys(this.reaction.reaction_stoichiometry)) {
+        const prop = G_i_IG[component_id];
+        if (!prop) throw new Error(`Component ID '${component_id}' not found in G_i_IG dictionary.`);
+        const { value } = ensureEnergy(prop);
+        contributions[component_id] = { value, unit: 'J/mol' };
+      }
+
+      return Object.keys(contributions).length ? contributions : null;
+    } catch {
       return null;
     }
   }
@@ -154,6 +210,27 @@ export class RXN {
     }
   }
 
+  // SECTION: Sensitivity of Gibbs free energy to temperature
+  dG_rxn_dT(dS_rxn_STD: CustomProp): CustomProp | null {
+    try {
+      const value = -ensureEntropy(dS_rxn_STD).value;
+      return { value, unit: 'J/mol.K' };
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: van't Hoff slope (lnK vs 1/T)
+  dlnK_dInvT(dH_rxn_STD: CustomProp): CustomProp | null {
+    try {
+      return _dlnK_dInvT({
+        enthalpy_of_reaction_std: ensureEnergy(dH_rxn_STD).value
+      });
+    } catch {
+      return null;
+    }
+  }
+
   // SECTION: Solve for equilibrium temperature given target Keq
   equilibrium_temperature(
     Keq_target: CustomProp,
@@ -185,5 +262,19 @@ export class RXN {
     } catch {
       return null;
     }
+  }
+
+  // SECTION: Convenience equilibrium temperature solver for Keq = 1
+  equilibrium_temperature_K1(
+    dG_rxn_STD_func: (temperature: Temperature) => CustomProp | null,
+    temperature_bounds: { low: Temperature; high: Temperature },
+    options?: { maxIterations?: number; tolerance?: number }
+  ): Temperature | null {
+    return this.equilibrium_temperature(
+      { value: 1, unit: 'dimensionless' },
+      dG_rxn_STD_func,
+      temperature_bounds,
+      options
+    );
   }
 }

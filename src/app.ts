@@ -319,6 +319,84 @@ export function dH_rxn_STD(opts: {
 }
 
 /**
+ * SECTION: Calculate standard heat capacity of reaction at given temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated standard heat capacity of reaction or null if calculation fails
+ */
+export function dCp_rxn_STD(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const Cp_i_IG = hsgs.calc_components_hsg(temperature, 'heat_capacity', { reaction_ids: true });
+  if (!Cp_i_IG) return null;
+
+  return rxn_adapter.dCp_rxn_std({ Cp_i_IG });
+}
+
+/**
+ * SECTION: Species contribution to reaction enthalpy (per-species H_i)
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Record<string, CustomProp> | null - Per-species enthalpy contributions or null if calculation fails
+ */
+export function species_contribution_enthalpy(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Record<string, CustomProp> | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const H_i_IG = hsgs.calc_components_hsg(temperature, 'enthalpy', { reaction_ids: true });
+  if (!H_i_IG) return null;
+
+  return rxn_adapter.species_contribution_enthalpy({ H_i_IG });
+}
+
+/**
+ * SECTION: Species contribution to reaction Gibbs energy (per-species G_i)
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Record<string, CustomProp> | null - Per-species Gibbs contributions or null if calculation fails
+ */
+export function species_contribution_gibbs(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Record<string, CustomProp> | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const G_i_IG = hsgs.calc_components_hsg(temperature, 'gibbs', { reaction_ids: true });
+  if (!G_i_IG) return null;
+
+  return rxn_adapter.species_contribution_gibbs({ G_i_IG });
+}
+
+/**
  * SECTION: Calculate equilibrium constant at given temperature
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -419,6 +497,64 @@ export function dlnKeq_dT(opts: {
 }
 
 /**
+ * SECTION: Sensitivity of Gibbs free energy to temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated d(ΔG°rxn)/dT or null if calculation fails
+ */
+export function dG_rxn_dT(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const S_i_IG = hsgs.calc_components_hsg(temperature, 'entropy', { reaction_ids: true });
+  if (!S_i_IG) return null;
+
+  const dS = rxn_adapter.dS_rxn_std({ S_i_IG });
+  if (!dS) return null;
+
+  return rxn_adapter.dG_rxn_dT({ dS_rxn_STD: dS });
+}
+
+/**
+ * SECTION: van't Hoff slope (lnK vs 1/T)
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated d(lnK)/d(1/T) or null if calculation fails
+ */
+export function dlnK_dInvT(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const H_i_IG = hsgs.calc_components_hsg(temperature, 'enthalpy', { reaction_ids: true });
+  if (!H_i_IG) return null;
+
+  const dH = rxn_adapter.dH_rxn_std({ H_i_IG });
+  if (!dH) return null;
+
+  return rxn_adapter.dlnK_dInvT({ dH_rxn_STD: dH });
+}
+
+/**
  * SECTION: Solve temperature for target equilibrium constant
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -459,6 +595,49 @@ export function equilibrium_temperature(opts: {
 
   return rxn_adapter.equilibrium_temperature({
     Keq_target,
+    dG_rxn_STD_func,
+    temperature_bounds,
+    options
+  });
+}
+
+/**
+ * SECTION: Solve temperature for Keq = 1 (ΔG° = 0)
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_bounds - Bracket for root finding
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.options - Solver options
+ * @returns Temperature | null - Temperature where Keq = 1 or null if not found
+ */
+export function equilibrium_temperature_K1(opts: {
+  reaction: Reaction;
+  temperature_bounds: { low: Temperature; high: Temperature };
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  options?: { maxIterations?: number; tolerance?: number };
+}): Temperature | null {
+  const {
+    reaction,
+    temperature_bounds,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    options
+  } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+
+  const dG_rxn_STD_func = (temperature: Temperature): CustomProp | null => {
+    const G_i_IG = hsgs.calc_components_hsg(temperature, 'gibbs', { reaction_ids: true });
+    if (!G_i_IG) return null;
+    return rxn_adapter.dG_rxn_std({ G_i_IG });
+  };
+
+  return rxn_adapter.equilibrium_temperature_K1({
     dG_rxn_STD_func,
     temperature_bounds,
     options

@@ -7,5 +7,11 @@ describe('browser bundle import', () => {
     expect(typeof browser.H_T).toBe('function');
     expect(typeof browser.dlnKeq_dT).toBe('function');
     expect(typeof browser.equilibrium_temperature).toBe('function');
+    expect(typeof browser.dG_rxn_dT).toBe('function');
+    expect(typeof browser.dlnK_dInvT).toBe('function');
+    expect(typeof browser.equilibrium_temperature_K1).toBe('function');
+    expect(typeof browser.dCp_rxn_STD).toBe('function');
+    expect(typeof browser.species_contribution_enthalpy).toBe('function');
+    expect(typeof browser.species_contribution_gibbs).toBe('function');
   });
 });

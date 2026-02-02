@@ -57,3 +57,16 @@ export function _dlnKeq_dT(opts: { enthalpy_of_reaction_std: number; temperature
   const value = enthalpy_of_reaction_std / (R_CONST_J__molK * temperature * temperature);
   return { value, unit: '1/K' };
 }
+
+/**
+ * van't Hoff slope:
+ * ! d(lnK)/d(1/T) = -dH_rxn / R
+ * Universal gas constant R in J/mol.K
+ * @returns d(lnK)/d(1/T) (K)
+ * @param enthalpy_of_reaction_std Enthalpy of reaction (J/mol)
+ */
+export function _dlnK_dInvT(opts: { enthalpy_of_reaction_std: number }): CustomProp {
+  const { enthalpy_of_reaction_std } = opts;
+  const value = -enthalpy_of_reaction_std / R_CONST_J__molK;
+  return { value, unit: 'K' };
+}
