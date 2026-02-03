@@ -107,6 +107,40 @@ export class RXNAdapter {
     return this.rxn.dlnK_dInvT(dH_rxn_STD);
   }
 
+  // SECTION: Sensitivity of lnK to reaction enthalpy
+  dlnK_dH({ temperature }: { temperature: Temperature }): CustomProp | null {
+    return this.rxn.dlnK_dH(temperature);
+  }
+
+  // SECTION: Sensitivity of reaction enthalpy to temperature
+  dH_rxn_dT({ dCp_rxn_STD }: { dCp_rxn_STD: CustomProp }): CustomProp | null {
+    return this.rxn.dH_rxn_dT(dCp_rxn_STD);
+  }
+
+  // SECTION: Sensitivity of reaction entropy to temperature
+  dS_rxn_dT({
+    dCp_rxn_STD,
+    temperature
+  }: {
+    dCp_rxn_STD: CustomProp;
+    temperature: Temperature;
+  }): CustomProp | null {
+    return this.rxn.dS_rxn_dT(dCp_rxn_STD, temperature);
+  }
+
+  // SECTION: Curvature of equilibrium constant with temperature
+  d2lnK_dT2({
+    dH_rxn_STD,
+    dCp_rxn_STD,
+    temperature
+  }: {
+    dH_rxn_STD: CustomProp;
+    dCp_rxn_STD: CustomProp;
+    temperature: Temperature;
+  }): CustomProp | null {
+    return this.rxn.d2lnK_dT2(dH_rxn_STD, dCp_rxn_STD, temperature);
+  }
+
   // SECTION: Solve for equilibrium temperature given target Keq
   equilibrium_temperature({
     Keq_target,

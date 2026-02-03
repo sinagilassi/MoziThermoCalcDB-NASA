@@ -345,6 +345,31 @@ export function dCp_rxn_STD(opts: {
 }
 
 /**
+ * SECTION: Calculate standard heat capacity of reaction over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dCp_rxn_STD_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dCp_rxn_STD({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
  * SECTION: Species contribution to reaction enthalpy (per-species H_i)
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -497,6 +522,31 @@ export function dlnKeq_dT(opts: {
 }
 
 /**
+ * SECTION: Temperature sensitivity of equilibrium constant over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dlnKeq_dT_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dlnKeq_dT({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
  * SECTION: Sensitivity of Gibbs free energy to temperature
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -526,6 +576,31 @@ export function dG_rxn_dT(opts: {
 }
 
 /**
+ * SECTION: Sensitivity of Gibbs free energy to temperature over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dG_rxn_dT_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dG_rxn_dT({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
  * SECTION: van't Hoff slope (lnK vs 1/T)
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -552,6 +627,246 @@ export function dlnK_dInvT(opts: {
   if (!dH) return null;
 
   return rxn_adapter.dlnK_dInvT({ dH_rxn_STD: dH });
+}
+
+/**
+ * SECTION: van't Hoff slope (lnK vs 1/T) over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dlnK_dInvT_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dlnK_dInvT({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
+ * SECTION: Sensitivity of lnK to reaction enthalpy
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated ∂(lnK)/∂(ΔH_rxn) or null if calculation fails
+ */
+export function dlnK_dH(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  return rxn_adapter.dlnK_dH({ temperature });
+}
+
+/**
+ * SECTION: Sensitivity of reaction enthalpy to temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated d(ΔH°rxn)/dT or null if calculation fails
+ */
+export function dH_rxn_dT(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const Cp_i_IG = hsgs.calc_components_hsg(temperature, 'heat_capacity', { reaction_ids: true });
+  if (!Cp_i_IG) return null;
+
+  const dCp = rxn_adapter.dCp_rxn_std({ Cp_i_IG });
+  if (!dCp) return null;
+
+  return rxn_adapter.dH_rxn_dT({ dCp_rxn_STD: dCp });
+}
+
+/**
+ * SECTION: Sensitivity of reaction entropy to temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated d(ΔS°rxn)/dT or null if calculation fails
+ */
+export function dS_rxn_dT(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+  const Cp_i_IG = hsgs.calc_components_hsg(temperature, 'heat_capacity', { reaction_ids: true });
+  if (!Cp_i_IG) return null;
+
+  const dCp = rxn_adapter.dCp_rxn_std({ Cp_i_IG });
+  if (!dCp) return null;
+
+  return rxn_adapter.dS_rxn_dT({ dCp_rxn_STD: dCp, temperature });
+}
+
+/**
+ * SECTION: Curvature of equilibrium constant with temperature
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature - The temperature at which to calculate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns CustomProp | null - The calculated d²(lnK)/dT² or null if calculation fails
+ */
+export function d2lnK_dT2(opts: {
+  reaction: Reaction;
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): CustomProp | null {
+  const { reaction, temperature, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  const { rxn_adapter, hsgs } = buildReactionContext({ reaction, model_source, component_key, nasa_type });
+
+  const H_i_IG = hsgs.calc_components_hsg(temperature, 'enthalpy', { reaction_ids: true });
+  if (!H_i_IG) return null;
+  const dH = rxn_adapter.dH_rxn_std({ H_i_IG });
+  if (!dH) return null;
+
+  const Cp_i_IG = hsgs.calc_components_hsg(temperature, 'heat_capacity', { reaction_ids: true });
+  if (!Cp_i_IG) return null;
+  const dCp = rxn_adapter.dCp_rxn_std({ Cp_i_IG });
+  if (!dCp) return null;
+
+  return rxn_adapter.d2lnK_dT2({ dH_rxn_STD: dH, dCp_rxn_STD: dCp, temperature });
+}
+
+/**
+ * SECTION: Sensitivity of lnK to reaction enthalpy over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dlnK_dH_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dlnK_dH({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
+ * SECTION: Sensitivity of reaction enthalpy to temperature over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dH_rxn_dT_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dH_rxn_dT({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
+ * SECTION: Sensitivity of reaction entropy to temperature over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dS_rxn_dT_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dS_rxn_dT({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
+ * SECTION: Curvature of equilibrium constant over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function d2lnK_dT2_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: d2lnK_dT2({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
 }
 
 /**

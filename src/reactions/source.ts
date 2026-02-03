@@ -83,6 +83,35 @@ export function dlnK_dInvT(opts: { reaction: Reaction; dH_rxn_STD: CustomProp })
   return rxnObj.dlnK_dInvT(opts.dH_rxn_STD);
 }
 
+export function dlnK_dH(opts: { reaction: Reaction; temperature: Temperature }): CustomProp | null {
+  const rxnObj = rxn(opts.reaction);
+  return rxnObj.dlnK_dH(opts.temperature);
+}
+
+export function dH_rxn_dT(opts: { reaction: Reaction; dCp_rxn_STD: CustomProp }): CustomProp | null {
+  const rxnObj = rxn(opts.reaction);
+  return rxnObj.dH_rxn_dT(opts.dCp_rxn_STD);
+}
+
+export function dS_rxn_dT(opts: {
+  reaction: Reaction;
+  dCp_rxn_STD: CustomProp;
+  temperature: Temperature;
+}): CustomProp | null {
+  const rxnObj = rxn(opts.reaction);
+  return rxnObj.dS_rxn_dT(opts.dCp_rxn_STD, opts.temperature);
+}
+
+export function d2lnK_dT2(opts: {
+  reaction: Reaction;
+  dH_rxn_STD: CustomProp;
+  dCp_rxn_STD: CustomProp;
+  temperature: Temperature;
+}): CustomProp | null {
+  const rxnObj = rxn(opts.reaction);
+  return rxnObj.d2lnK_dT2(opts.dH_rxn_STD, opts.dCp_rxn_STD, opts.temperature);
+}
+
 export function equilibrium_temperature_K1(opts: {
   reaction: Reaction;
   dG_rxn_STD_func: (temperature: Temperature) => CustomProp | null;

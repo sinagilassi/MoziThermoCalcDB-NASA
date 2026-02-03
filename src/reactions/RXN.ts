@@ -1,7 +1,16 @@
 import { CustomProp, Temperature } from '@/types/models';
 import { ReactionAnalysis } from './RXNAnalyzer';
 import { ensureEnergy, ensureEntropy, ensureKelvin, toJPerMol } from '@/utils/conversions';
-import { _Keq as KeqThermo, _Keq_VH_Shortcut, _dlnKeq_dT, _dlnK_dInvT } from './reactions';
+import {
+  _Keq as KeqThermo,
+  _Keq_VH_Shortcut,
+  _dlnKeq_dT,
+  _dlnK_dInvT,
+  _dlnK_dH,
+  _dH_rxn_dT,
+  _dS_rxn_dT,
+  _d2lnK_dT2
+} from './reactions';
 import { R_CONST_J__molK, TEMPERATURE_REF_K } from '@/types/constants';
 import { bisectRoot, integrateTrapezoidal } from '@/utils/mathMethods';
 
@@ -225,6 +234,49 @@ export class RXN {
     try {
       return _dlnK_dInvT({
         enthalpy_of_reaction_std: ensureEnergy(dH_rxn_STD).value
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Sensitivity of lnK to reaction enthalpy
+  dlnK_dH(temperature: Temperature): CustomProp | null {
+    try {
+      return _dlnK_dH({ temperature: ensureKelvin(temperature) });
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Sensitivity of reaction enthalpy to temperature
+  dH_rxn_dT(dCp_rxn_STD: CustomProp): CustomProp | null {
+    try {
+      return _dH_rxn_dT({ heat_capacity_of_reaction: ensureEntropy(dCp_rxn_STD).value });
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Sensitivity of reaction entropy to temperature
+  dS_rxn_dT(dCp_rxn_STD: CustomProp, temperature: Temperature): CustomProp | null {
+    try {
+      return _dS_rxn_dT({
+        heat_capacity_of_reaction: ensureEntropy(dCp_rxn_STD).value,
+        temperature: ensureKelvin(temperature)
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  // SECTION: Curvature of equilibrium constant with temperature
+  d2lnK_dT2(dH_rxn_STD: CustomProp, dCp_rxn_STD: CustomProp, temperature: Temperature): CustomProp | null {
+    try {
+      return _d2lnK_dT2({
+        enthalpy_of_reaction_std: ensureEnergy(dH_rxn_STD).value,
+        heat_capacity_of_reaction: ensureEntropy(dCp_rxn_STD).value,
+        temperature: ensureKelvin(temperature)
       });
     } catch {
       return null;

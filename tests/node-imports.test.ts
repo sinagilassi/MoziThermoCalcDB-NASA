@@ -17,6 +17,18 @@ describe('node imports from built artifacts', () => {
     expect(typeof cjs.dCp_rxn_STD).toBe('function');
     expect(typeof cjs.species_contribution_enthalpy).toBe('function');
     expect(typeof cjs.species_contribution_gibbs).toBe('function');
+    expect(typeof cjs.dlnK_dH).toBe('function');
+    expect(typeof cjs.dH_rxn_dT).toBe('function');
+    expect(typeof cjs.dS_rxn_dT).toBe('function');
+    expect(typeof cjs.d2lnK_dT2).toBe('function');
+    expect(typeof cjs.dlnKeq_dT_series).toBe('function');
+    expect(typeof cjs.dG_rxn_dT_series).toBe('function');
+    expect(typeof cjs.dlnK_dInvT_series).toBe('function');
+    expect(typeof cjs.dlnK_dH_series).toBe('function');
+    expect(typeof cjs.dH_rxn_dT_series).toBe('function');
+    expect(typeof cjs.dS_rxn_dT_series).toBe('function');
+    expect(typeof cjs.d2lnK_dT2_series).toBe('function');
+    expect(typeof cjs.dCp_rxn_STD_series).toBe('function');
   });
 
   it('loads ESM bundle and exposes key APIs', async () => {
@@ -31,5 +43,17 @@ describe('node imports from built artifacts', () => {
     expect(typeof esm.dCp_rxn_STD).toBe('function');
     expect(typeof esm.species_contribution_enthalpy).toBe('function');
     expect(typeof esm.species_contribution_gibbs).toBe('function');
+    expect(typeof esm.dlnK_dH).toBe('function');
+    expect(typeof esm.dH_rxn_dT).toBe('function');
+    expect(typeof esm.dS_rxn_dT).toBe('function');
+    expect(typeof esm.d2lnK_dT2).toBe('function');
+    expect(typeof esm.dlnKeq_dT_series).toBe('function');
+    expect(typeof esm.dG_rxn_dT_series).toBe('function');
+    expect(typeof esm.dlnK_dInvT_series).toBe('function');
+    expect(typeof esm.dlnK_dH_series).toBe('function');
+    expect(typeof esm.dH_rxn_dT_series).toBe('function');
+    expect(typeof esm.dS_rxn_dT_series).toBe('function');
+    expect(typeof esm.d2lnK_dT2_series).toBe('function');
+    expect(typeof esm.dCp_rxn_STD_series).toBe('function');
   });
 });
