@@ -1,0 +1,66 @@
+=== Species series: H2 (gas) ===
+H_T_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":2954.9224630071717,"unit":"J/mol"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":52952.397197012535,"unit":"J/mol"}}
+S_T_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":139.19879085774798,"unit":"J/mol.K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":188.41913601397596,"unit":"J/mol.K"}}
+G_T_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-52724.59388009202,"unit":"J/mol"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-323885.87483093934,"unit":"J/mol"}}
+Cp_T_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":29.156449808264423,"unit":"J/mol.K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":34.279960312038064,"unit":"J/mol.K"}}
+
+=== Reaction series: 2 H2 + O2 -> 2 H2O (gas) ===
+dH_rxn_STD_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-485680.3069427097,"unit":"J/mol"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-502675.44844656275,"unit":"J/mol"}}
+dS_rxn_STD_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-94.70181903491891,"unit":"J/mol.K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-115.7798693830822,"unit":"J/mol.K"}}
+dG_rxn_STD_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-447799.5793287422,"unit":"J/mol"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-271115.7096803982,"unit":"J/mol"}}
+Keq_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":2.9887032310943085e+58,"unit":"dimensionless"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":12041414.164504703,"unit":"dimensionless"}}
+dCp_rxn_STD_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-19.88798459047605,"unit":"J/mol.K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-2.839858672249875,"unit":"J/mol.K"}}
+
+=== Sensitivities at T=1000 K (water formation) ===
+dlnKeq_dT: {"value":-0.05960892131919539,"unit":"1/K"}
+dG_rxn_dT: {"value":110.38719261988774,"unit":"J/mol.K"}
+dlnK_dInvT: {"value":59608.92131919539,"unit":"K"}
+dlnK_dH: {"value":0.00012027235504494274,"unit":"mol/J"}
+dH_rxn_dT: {"value":-12.579872041771452,"unit":"J/mol.K"}
+dS_rxn_dT: {"value":-0.012579872041771452,"unit":"J/mol.K^2"}
+d2lnK_dT2: {"value":0.0001177048318017629,"unit":"1/K^2"}
+
+=== Sensitivity series (water formation) ===
+dlnKeq_dT_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-0.36508696446843963,"unit":"1/K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-0.0151144900019852,"unit":"1/K"}}
+dG_rxn_dT_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":94.70181903491891,"unit":"J/mol.K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":115.7798693830822,"unit":"J/mol.K"}}
+dlnK_dInvT_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":58413.91431495034,"unit":"K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":60457.9600079408,"unit":"K"}}
+dlnK_dH_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":0.0003006808876123568,"unit":"mol/J"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":0.00006013617752247137,"unit":"mol/J"}}
+dH_rxn_dT_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-19.88798459047605,"unit":"J/mol.K"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-2.839858672249875,"unit":"J/mol.K"}}
+dS_rxn_dT_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":-0.04971996147619013,"unit":"J/mol.K^2"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":-0.0014199293361249375,"unit":"J/mol.K^2"}}
+d2lnK_dT2_series:
+  first: {"temperature":{"value":400,"unit":"K"},"result":{"value":0.0018104849801934852,"unit":"1/K^2"}}
+  last: {"temperature":{"value":2000,"unit":"K"},"result":{"value":0.000015029100879358626,"unit":"1/K^2"}}
+
+=== Species contributions at 1000 K (WGSR) ===
+species_contribution_enthalpy: {"CO-g":{"value":-88799.70884143953,"unit":"J/mol"},"H2O-g":{"value":-215809.13471233993,"unit":"J/mol"},"CO2-g":{"value":-360106.5173800857,"unit":"J/mol"},"H2-g":{"value":20641.60834875942,"unit":"J/mol"}}
+species_contribution_gibbs: {"CO-g":{"value":-323407.13905721117,"unit":"J/mol"},"H2O-g":{"value":-448562.5161162663,"unit":"J/mol"},"CO2-g":{"value":-629404.2048717679,"unit":"J/mol"},"H2-g":{"value":-145507.5050535431,"unit":"J/mol"}}
