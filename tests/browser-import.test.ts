@@ -25,5 +25,13 @@ describe('browser bundle import', () => {
     expect(typeof browser.dS_rxn_dT_series).toBe('function');
     expect(typeof browser.d2lnK_dT2_series).toBe('function');
     expect(typeof browser.dCp_rxn_STD_series).toBe('function');
+    expect(typeof browser.H_T_series).toBe('function');
+    expect(typeof browser.S_T_series).toBe('function');
+    expect(typeof browser.G_T_series).toBe('function');
+    expect(typeof browser.Cp_T_series).toBe('function');
+    expect(typeof browser.dG_rxn_STD_series).toBe('function');
+    expect(typeof browser.dS_rxn_STD_series).toBe('function');
+    expect(typeof browser.dH_rxn_STD_series).toBe('function');
+    expect(typeof browser.Keq_series).toBe('function');
   });
 });

@@ -85,6 +85,33 @@ export function H_T(opts: {
 }
 
 /**
+ * SECTION: Calculate enthalpy over a temperature list for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate enthalpy for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function H_T_series(opts: {
+  component: Component;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: BasisType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { component, temperature_list, model_source, component_key, nasa_type, basis } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: H_T({ component, temperature, model_source, component_key, nasa_type, basis })
+  }));
+}
+
+/**
  * SECTION: Calculate absolute entropy at given temperature for a component
  * @param opts - Options object
  * @param opts.component - The component to calculate entropy for
@@ -134,6 +161,33 @@ export function S_T(opts: {
   ) as NASARangeType;
 
   return hsg.calc_absolute_entropy(temperature, nasa_type_selected);
+}
+
+/**
+ * SECTION: Calculate entropy over a temperature list for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate entropy for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function S_T_series(opts: {
+  component: Component;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: BasisType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { component, temperature_list, model_source, component_key, nasa_type, basis } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: S_T({ component, temperature, model_source, component_key, nasa_type, basis })
+  }));
 }
 
 /**
@@ -189,6 +243,33 @@ export function G_T(opts: {
 }
 
 /**
+ * SECTION: Calculate Gibbs free energy over a temperature list for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate Gibbs free energy for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function G_T_series(opts: {
+  component: Component;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: BasisType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { component, temperature_list, model_source, component_key, nasa_type, basis } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: G_T({ component, temperature, model_source, component_key, nasa_type, basis })
+  }));
+}
+
+/**
  * SECTION: Calculate heat capacity at constant pressure at given temperature for a component
  * @param opts - Options object
  * @param opts.component - The component to calculate heat capacity for
@@ -241,6 +322,33 @@ export function Cp_T(opts: {
 }
 
 /**
+ * SECTION: Calculate heat capacity over a temperature list for a component
+ * @param opts - Options object
+ * @param opts.component - The component to calculate heat capacity for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'molar' or 'mass' (default: 'molar')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function Cp_T_series(opts: {
+  component: Component;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: BasisType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { component, temperature_list, model_source, component_key, nasa_type, basis } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: Cp_T({ component, temperature, model_source, component_key, nasa_type, basis })
+  }));
+}
+
+/**
  * SECTION: Calculate standard Gibbs free energy of reaction at given temperature
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -264,6 +372,31 @@ export function dG_rxn_STD(opts: {
   if (!G_i_IG) return null;
 
   return rxn_adapter.dG_rxn_std({ G_i_IG });
+}
+
+/**
+ * SECTION: Calculate standard Gibbs free energy of reaction over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dG_rxn_STD_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dG_rxn_STD({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
 }
 
 /**
@@ -293,6 +426,31 @@ export function dS_rxn_STD(opts: {
 }
 
 /**
+ * SECTION: Calculate standard entropy of reaction over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dS_rxn_STD_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dS_rxn_STD({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
+}
+
+/**
  * SECTION: Calculate standard enthalpy of reaction at given temperature
  * @param opts - Options object
  * @param opts.reaction - The reaction to calculate for
@@ -316,6 +474,31 @@ export function dH_rxn_STD(opts: {
   if (!H_i_IG) return null;
 
   return rxn_adapter.dH_rxn_std({ H_i_IG });
+}
+
+/**
+ * SECTION: Calculate standard enthalpy of reaction over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function dH_rxn_STD_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: dH_rxn_STD({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
 }
 
 /**
@@ -448,6 +631,31 @@ export function Keq(opts: {
   if (!dG) return null;
 
   return rxn_adapter.Keq({ dG_rxn_STD: dG, temperature });
+}
+
+/**
+ * SECTION: Calculate equilibrium constant over a temperature list
+ * @param opts - Options object
+ * @param opts.reaction - The reaction to calculate for
+ * @param opts.temperature_list - Temperatures to evaluate
+ * @param opts.model_source - The NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function Keq_series(opts: {
+  reaction: Reaction;
+  temperature_list: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { reaction, temperature_list, model_source, component_key = 'Name-Formula', nasa_type = 'nasa9' } = opts;
+
+  return temperature_list.map((temperature) => ({
+    temperature,
+    result: Keq({ reaction, temperature, model_source, component_key, nasa_type })
+  }));
 }
 
 /**

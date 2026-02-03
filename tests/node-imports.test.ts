@@ -29,6 +29,14 @@ describe('node imports from built artifacts', () => {
     expect(typeof cjs.dS_rxn_dT_series).toBe('function');
     expect(typeof cjs.d2lnK_dT2_series).toBe('function');
     expect(typeof cjs.dCp_rxn_STD_series).toBe('function');
+    expect(typeof cjs.H_T_series).toBe('function');
+    expect(typeof cjs.S_T_series).toBe('function');
+    expect(typeof cjs.G_T_series).toBe('function');
+    expect(typeof cjs.Cp_T_series).toBe('function');
+    expect(typeof cjs.dG_rxn_STD_series).toBe('function');
+    expect(typeof cjs.dS_rxn_STD_series).toBe('function');
+    expect(typeof cjs.dH_rxn_STD_series).toBe('function');
+    expect(typeof cjs.Keq_series).toBe('function');
   });
 
   it('loads ESM bundle and exposes key APIs', async () => {
@@ -55,5 +63,13 @@ describe('node imports from built artifacts', () => {
     expect(typeof esm.dS_rxn_dT_series).toBe('function');
     expect(typeof esm.d2lnK_dT2_series).toBe('function');
     expect(typeof esm.dCp_rxn_STD_series).toBe('function');
+    expect(typeof esm.H_T_series).toBe('function');
+    expect(typeof esm.S_T_series).toBe('function');
+    expect(typeof esm.G_T_series).toBe('function');
+    expect(typeof esm.Cp_T_series).toBe('function');
+    expect(typeof esm.dG_rxn_STD_series).toBe('function');
+    expect(typeof esm.dS_rxn_STD_series).toBe('function');
+    expect(typeof esm.dH_rxn_STD_series).toBe('function');
+    expect(typeof esm.Keq_series).toBe('function');
   });
 });
