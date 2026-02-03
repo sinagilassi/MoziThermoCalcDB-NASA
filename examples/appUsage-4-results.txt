@@ -1,0 +1,3 @@
+=== Equilibrium temperature solve (WGSR) ===
+equilibrium_temperature (Keq=10): {"value":693.1267050899563,"unit":"K"}
+equilibrium_temperature_K1: {"value":1096.0260605178773,"unit":"K"}
