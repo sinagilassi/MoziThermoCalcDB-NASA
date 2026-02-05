@@ -227,6 +227,29 @@ async function main() {
     const KeqVH_2 = Keq_vh_shortcut({ reaction: reaction_2, temperature: reactionTemperature_2, model_source: component_model_source });
     logAndCapture("Keq (van't Hoff shortcut):", KeqVH_2);
 
+
+    // NOTE: Methane Combustion Reaction
+    const reaction_3: Reaction = {
+        name: 'methane-combustion-reaction',
+        reaction: 'CH4(g) + 2 O2(g) => CO2(g) + 2 H2O(g)',
+        components: [methane, oxygen, carbon_dioxide, water]
+    }
+
+    const reactionTemperature_3: Temperature = { value: 298.15, unit: 'K' };
+    console.log('\n=== Reaction properties for CH4 + 2O2 -> CO2 + 2H2O (gas) at 298.15 K ===');
+    results.push('=== Reaction properties for CH4 + 2O2 -> CO2 + 2H2O (gas) at 298.15 K ===');
+    const dH_3 = dH_rxn_STD({ reaction: reaction_3, temperature: reactionTemperature_3, model_source: component_model_source });
+    logAndCapture('dH_rxn_STD:', dH_3);
+    const dS_3 = dS_rxn_STD({ reaction: reaction_3, temperature: reactionTemperature_3, model_source: component_model_source });
+    logAndCapture('dS_rxn_STD:', dS_3);
+    const dG_3 = dG_rxn_STD({ reaction: reaction_3, temperature: reactionTemperature_3, model_source: component_model_source });
+    logAndCapture('dG_rxn_STD:', dG_3);
+    const KeqVal_3 = Keq({ reaction: reaction_3, temperature: reactionTemperature_3, model_source: component_model_source });
+    logAndCapture('Keq:', KeqVal_3);
+    const KeqVH_3 = Keq_vh_shortcut({ reaction: reaction_3, temperature: reactionTemperature_3, model_source: component_model_source });
+    logAndCapture("Keq (van't Hoff shortcut):", KeqVH_3);
+
+
     const outputFile_2 = path.join(__dirname, 'appUsage-2-results-2.txt');
     await writeFile(outputFile_2, results.join('\n'), 'utf-8');
     console.log(`\nResults written to ${outputFile_2}`);
