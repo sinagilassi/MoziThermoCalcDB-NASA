@@ -2,6 +2,19 @@
   "name": "mozithermocalcdb-nasa",
   "version": "0.3.0",
   "description": "Thermodynamic calculations using NASA7/9 polynomials",
+  "keywords": [
+    "thermodynamics",
+    "thermo-calculations",
+    "nasa",
+    "thermo",
+    "ideal-gas",
+    "heat-capacity",
+    "nasa-polynomials",
+    "enthalpy",
+    "entropy",
+    "gibbs-free-energy",
+    "thermo-chemistry"
+  ],
   "homepage": "https://github.com/sinagilassi/MoziThermoCalcDB-NASA#readme",
   "bugs": {
     "url": "https://github.com/sinagilassi/MoziThermoCalcDB-NASA/issues"
