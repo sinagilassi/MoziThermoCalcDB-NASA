@@ -40,3 +40,9 @@ dS_rxn_STD: {"value":-40.56815645513373,"unit":"J/mol.K"}
 dG_rxn_STD: {"value":-24488.38696292042,"unit":"J/mol"}
 Keq: {"value":1631.7411546012158,"unit":"dimensionless"}
 Keq (van't Hoff shortcut): {"value":1598.3332179188676,"unit":"dimensionless"}
+=== Reaction properties for CH4 + 2O2 -> CO2 + 2H2O (gas) at 1500 K ===
+dH_rxn_STD: {"value":-802558.4044127734,"unit":"J/mol"}
+dS_rxn_STD: {"value":-5.228968580665594,"unit":"J/mol.K"}
+dG_rxn_STD: {"value":-800999.3874304481,"unit":"J/mol"}
+Keq: {"value":2.133149860896641e+140,"unit":"dimensionless"}
+Keq (van't Hoff shortcut): {"value":2.133149860896641e+140,"unit":"dimensionless"}

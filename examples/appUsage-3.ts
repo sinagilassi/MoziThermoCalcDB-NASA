@@ -24,17 +24,17 @@ import {
   dG_rxn_STD_series,
   dS_rxn_STD_series,
   dH_rxn_STD_series,
+  dCp_rxn_STD_series,
   Keq_series,
   species_contribution_enthalpy,
   species_contribution_gibbs,
-  dlnKeq_dT_series,
-  dG_rxn_dT_series,
-  dlnK_dInvT_series,
   dlnK_dH_series,
+  dlnKeq_dT_series,
+  dlnK_dInvT_series,
+  dG_rxn_dT_series,
   dH_rxn_dT_series,
   dS_rxn_dT_series,
   d2lnK_dT2_series,
-  dCp_rxn_STD_series
 } from '../src/app.js';
 import { loadExampleModelSource, buildComponentModelSource } from './modelSource.js';
 
