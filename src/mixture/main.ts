@@ -1,5 +1,5 @@
 // import libs
-import { MIXTURE } from '@/mixture/MIXTURE';
+import { MIXTURE } from '@/mixture/MIX';
 import { Component, CustomProp, Temperature } from '@/types';
 
 // SECTION: Mixture Enthalpy
