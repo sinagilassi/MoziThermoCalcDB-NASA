@@ -2,11 +2,13 @@
 import { HSG } from './core/HSG';
 import { HSGs } from './core/HSGs';
 import { RXNAdapter } from './reactions/RXNAdapter';
+import { MIXTURE } from './mixture';
 import {
   NASAType,
   NASARangeType,
   ComponentKey,
   BasisType,
+  PRESSURE_REF_Pa,
   TEMPERATURE_BREAK_NASA7_1000_K,
   TEMPERATURE_BREAK_NASA7_6000_K,
   TEMPERATURE_BREAK_NASA9_1000_K,
@@ -16,6 +18,7 @@ import { Component, CustomProp, Temperature } from './types/models';
 import { ModelSource, Reaction } from './types/external';
 import { selectNasaType } from './utils/tools';
 import { Source } from './core/Source';
+import { setComponentId } from './utils/component';
 
 
 // NOTE: helper to build reaction context
@@ -30,6 +33,79 @@ function buildReactionContext(opts: {
   const rxn_adapter = new RXNAdapter(reaction);
   const hsgs = new HSGs(Source_, rxn_adapter.components, component_key, nasa_type);
   return { rxn_adapter, hsgs };
+}
+
+// NOTE: helper to build mixture context
+function buildMixtureContext(opts: {
+  components: Component[];
+  model_source: ModelSource;
+  component_key: ComponentKey;
+  nasa_type: NASAType;
+}): { mixture: MIXTURE; hsgs: HSGs; source: Source } {
+  const { components, model_source, component_key, nasa_type } = opts;
+  const Source_ = new Source(model_source, component_key);
+  const mixture = new MIXTURE(components);
+  const hsgs = new HSGs(Source_, components, component_key, nasa_type);
+  return { mixture, hsgs, source: Source_ };
+}
+
+function buildComponentPropsByName(opts: {
+  components: Component[];
+  component_key: ComponentKey;
+  hsgs: HSGs;
+  temperature: Temperature;
+  prop_name: 'enthalpy' | 'entropy' | 'gibbs' | 'heat_capacity';
+}): Record<string, CustomProp> | null {
+  const { components, component_key, hsgs, temperature, prop_name } = opts;
+  const propsById = hsgs.calc_components_hsg(temperature, prop_name);
+  if (!propsById) return null;
+
+  const propsByName: Record<string, CustomProp> = {};
+  for (const component of components) {
+    const id = setComponentId({ component, componentKey: component_key });
+    const prop = propsById[id];
+    if (!prop) return null;
+    propsByName[component.name] = prop;
+  }
+  return Object.keys(propsByName).length ? propsByName : null;
+}
+
+function buildMWByName(opts: {
+  components: Component[];
+  component_key: ComponentKey;
+  source: Source;
+  nasa_type: NASAType;
+  temperature: Temperature;
+}): Record<string, number> | null {
+  const { components, component_key, source, nasa_type, temperature } = opts;
+
+  const nasa_temperature_break_min_value =
+    nasa_type === 'nasa7' ? TEMPERATURE_BREAK_NASA7_1000_K : TEMPERATURE_BREAK_NASA9_1000_K;
+  const nasa_temperature_break_max_value =
+    nasa_type === 'nasa7' ? TEMPERATURE_BREAK_NASA7_6000_K : TEMPERATURE_BREAK_NASA9_6000_K;
+
+  const nasa_type_selected = selectNasaType(
+    temperature,
+    { value: nasa_temperature_break_min_value, unit: 'K' },
+    { value: nasa_temperature_break_max_value, unit: 'K' },
+    nasa_type
+  ) as NASARangeType;
+
+  const MW_i: Record<string, number> = {};
+  for (const component of components) {
+    const eq_src = source.getDataSource({
+      component,
+      componentKey: component_key,
+      propName: nasa_type_selected
+    });
+    const mw = eq_src?.source?.MW;
+    if (typeof mw !== 'number' || !Number.isFinite(mw) || mw <= 0) {
+      return null;
+    }
+    MW_i[component.name] = mw;
+  }
+
+  return Object.keys(MW_i).length ? MW_i : null;
 }
 
 /**
@@ -346,6 +422,360 @@ export function Cp_T_series(opts: {
     temperature,
     result: Cp_T({ component, temperature, model_source, component_key, nasa_type, basis })
   }));
+}
+
+/**
+ * SECTION: Mixture enthalpy at given temperature
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperature - Temperature at which to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns CustomProp | null
+ */
+export function H_mix_T(opts: {
+  components: Component[];
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  MW_i?: Record<string, number>;
+}): CustomProp | null {
+  const {
+    components,
+    temperature,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    basis = 'mole',
+    MW_i
+  } = opts;
+
+  const { mixture, hsgs, source } = buildMixtureContext({
+    components,
+    model_source,
+    component_key,
+    nasa_type
+  });
+
+  const H_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'enthalpy'
+  });
+  if (!H_i_IG) return null;
+
+  const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+  return mixture.calculateMixtureEnthalpy(H_i_IG, MW, basis);
+}
+
+/**
+ * SECTION: Mixture entropy at given temperature
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperature - Temperature at which to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns CustomProp | null
+ */
+export function S_mix_T(opts: {
+  components: Component[];
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): CustomProp | null {
+  const {
+    components,
+    temperature,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    basis = 'mole',
+    pressure_Pa = PRESSURE_REF_Pa,
+    MW_i
+  } = opts;
+
+  const { mixture, hsgs, source } = buildMixtureContext({
+    components,
+    model_source,
+    component_key,
+    nasa_type
+  });
+
+  const S_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'entropy'
+  });
+  if (!S_i_IG) return null;
+
+  const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+  return mixture.calculateMixtureEntropy(S_i_IG, MW, basis, pressure_Pa);
+}
+
+/**
+ * SECTION: Mixture Gibbs free energy at given temperature
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperature - Temperature at which to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns CustomProp | null
+ */
+export function G_mix_T(opts: {
+  components: Component[];
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): CustomProp | null {
+  const {
+    components,
+    temperature,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    basis = 'mole',
+    pressure_Pa = PRESSURE_REF_Pa,
+    MW_i
+  } = opts;
+
+  const { mixture, hsgs, source } = buildMixtureContext({
+    components,
+    model_source,
+    component_key,
+    nasa_type
+  });
+
+  const G_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'gibbs'
+  });
+  if (!G_i_IG) return null;
+
+  const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+  return mixture.calculateMixtureGibbsEnergy(G_i_IG, MW, basis, temperature, pressure_Pa);
+}
+
+/**
+ * SECTION: Mixture heat capacity at given temperature
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperature - Temperature at which to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns CustomProp | null
+ */
+export function Cp_mix_T(opts: {
+  components: Component[];
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  MW_i?: Record<string, number>;
+}): CustomProp | null {
+  const {
+    components,
+    temperature,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    basis = 'mole',
+    MW_i
+  } = opts;
+
+  const { mixture, hsgs, source } = buildMixtureContext({
+    components,
+    model_source,
+    component_key,
+    nasa_type
+  });
+
+  const Cp_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'heat_capacity'
+  });
+  if (!Cp_i_IG) return null;
+
+  const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+  return mixture.calculateMixtureHeatCapacity(Cp_i_IG, MW, basis);
+}
+
+/**
+ * SECTION: Chemical potential for mixture components at given temperature
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperature - Temperature at which to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns Record<string, CustomProp> | null
+ */
+export function chemical_potential_mix_T(opts: {
+  components: Component[];
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): Record<string, CustomProp> | null {
+  const {
+    components,
+    temperature,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    basis = 'mole',
+    pressure_Pa = PRESSURE_REF_Pa,
+    MW_i
+  } = opts;
+
+  const { mixture, hsgs, source } = buildMixtureContext({
+    components,
+    model_source,
+    component_key,
+    nasa_type
+  });
+
+  const G_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'gibbs'
+  });
+  if (!G_i_IG) return null;
+
+  const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+  return mixture.calculateChemicalPotential(G_i_IG, MW, basis, temperature, pressure_Pa);
+}
+
+/**
+ * SECTION: All mixture properties at once
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperature - Temperature at which to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ */
+export function mixture_properties_T(opts: {
+  components: Component[];
+  temperature: Temperature;
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): {
+  enthalpy: CustomProp | null;
+  entropy: CustomProp | null;
+  gibbsEnergy: CustomProp | null;
+  heatCapacity: CustomProp | null;
+  chemicalPotential: Record<string, CustomProp> | null;
+} {
+  const {
+    components,
+    temperature,
+    model_source,
+    component_key = 'Name-Formula',
+    nasa_type = 'nasa9',
+    basis = 'mole',
+    pressure_Pa = PRESSURE_REF_Pa,
+    MW_i
+  } = opts;
+
+  const { mixture, hsgs, source } = buildMixtureContext({
+    components,
+    model_source,
+    component_key,
+    nasa_type
+  });
+
+  const H_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'enthalpy'
+  });
+  const S_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'entropy'
+  });
+  const G_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'gibbs'
+  });
+  const Cp_i_IG = buildComponentPropsByName({
+    components,
+    component_key,
+    hsgs,
+    temperature,
+    prop_name: 'heat_capacity'
+  });
+
+  const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+
+  return {
+    enthalpy: H_i_IG ? mixture.calculateMixtureEnthalpy(H_i_IG, MW, basis) : null,
+    entropy: S_i_IG ? mixture.calculateMixtureEntropy(S_i_IG, MW, basis, pressure_Pa) : null,
+    gibbsEnergy: G_i_IG
+      ? mixture.calculateMixtureGibbsEnergy(G_i_IG, MW, basis, temperature, pressure_Pa)
+      : null,
+    heatCapacity: Cp_i_IG ? mixture.calculateMixtureHeatCapacity(Cp_i_IG, MW, basis) : null,
+    chemicalPotential: G_i_IG
+      ? mixture.calculateChemicalPotential(G_i_IG, MW, basis, temperature, pressure_Pa)
+      : null
+  };
 }
 
 /**

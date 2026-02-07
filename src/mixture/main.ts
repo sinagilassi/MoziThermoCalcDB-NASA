@@ -1,6 +1,6 @@
 // import libs
 import { MIXTURE } from '@/mixture/MIXTURE';
-import { Component, CustomProp } from '@/types';
+import { Component, CustomProp, Temperature } from '@/types';
 
 // SECTION: Mixture Enthalpy
 export function calculateMixtureEnthalpy(
@@ -30,7 +30,8 @@ export function calculateMixtureEntropy(
     components: Component[],
     S_i_IG: Record<string, CustomProp>,
     MW_i: Record<string, number>,
-    basis: 'mole' | 'mass' = 'mole'
+    basis: 'mole' | 'mass' = 'mole',
+    pressure_Pa?: number
 ): CustomProp | null {
     try {
         // NOTE: init mixture
@@ -40,7 +41,8 @@ export function calculateMixtureEntropy(
         return mixture.calculateMixtureEntropy(
             S_i_IG,
             MW_i,
-            basis
+            basis,
+            pressure_Pa
         );
     } catch (error) {
         console.error('Error calculating mixture entropy:', error);
@@ -53,7 +55,9 @@ export function calculateMixtureGibbsFreeEnergy(
     components: Component[],
     G_i_IG: Record<string, CustomProp>,
     MW_i: Record<string, number>,
-    basis: 'mole' | 'mass' = 'mole'
+    basis: 'mole' | 'mass' = 'mole',
+    temperature?: Temperature,
+    pressure_Pa?: number
 ): CustomProp | null {
     try {
         // NOTE: init mixture
@@ -63,7 +67,9 @@ export function calculateMixtureGibbsFreeEnergy(
         return mixture.calculateMixtureGibbsEnergy(
             G_i_IG,
             MW_i,
-            basis
+            basis,
+            temperature,
+            pressure_Pa
         );
     } catch (error) {
         console.error('Error calculating mixture Gibbs free energy:', error);
@@ -99,7 +105,9 @@ export function calculateChemicalPotential(
     components: Component[],
     G_i_IG: Record<string, CustomProp>,
     MW_i: Record<string, number>,
-    basis: 'mole' | 'mass' = 'mole'
+    basis: 'mole' | 'mass' = 'mole',
+    temperature?: Temperature,
+    pressure_Pa?: number
 ): Record<string, CustomProp> | null {
     try {
         // NOTE: init mixture
@@ -109,7 +117,9 @@ export function calculateChemicalPotential(
         return mixture.calculateChemicalPotential(
             G_i_IG,
             MW_i,
-            basis
+            basis,
+            temperature,
+            pressure_Pa
         );
     } catch (error) {
         console.error('Error calculating chemical potential:', error);
@@ -125,7 +135,9 @@ export function calculateAllMixtureProperties(
     G_i_IG: Record<string, CustomProp>,
     Cp_i_IG: Record<string, CustomProp>,
     MW_i: Record<string, number>,
-    basis: 'mole' | 'mass' = 'mole'
+    basis: 'mole' | 'mass' = 'mole',
+    temperature?: Temperature,
+    pressure_Pa?: number
 ): {
     enthalpy: CustomProp | null;
     entropy: CustomProp | null;
@@ -140,10 +152,10 @@ export function calculateAllMixtureProperties(
         // NOTE: calculate all mixture properties
         return {
             enthalpy: mixture.calculateMixtureEnthalpy(H_i_IG, MW_i, basis),
-            entropy: mixture.calculateMixtureEntropy(S_i_IG, MW_i, basis),
-            gibbsEnergy: mixture.calculateMixtureGibbsEnergy(G_i_IG, MW_i, basis),
+            entropy: mixture.calculateMixtureEntropy(S_i_IG, MW_i, basis, pressure_Pa),
+            gibbsEnergy: mixture.calculateMixtureGibbsEnergy(G_i_IG, MW_i, basis, temperature, pressure_Pa),
             heatCapacity: mixture.calculateMixtureHeatCapacity(Cp_i_IG, MW_i, basis),
-            chemicalPotential: mixture.calculateChemicalPotential(G_i_IG, MW_i, basis)
+            chemicalPotential: mixture.calculateChemicalPotential(G_i_IG, MW_i, basis, temperature, pressure_Pa)
         };
     } catch (error) {
         console.error('Error calculating all mixture properties:', error);
