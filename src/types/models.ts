@@ -9,6 +9,7 @@ export interface Component {
   name: string;
   formula: string;
   state: StateType;
+  moleFraction?: number;
   molecularWeight?: number;
   formulaRaw?: string;
 }

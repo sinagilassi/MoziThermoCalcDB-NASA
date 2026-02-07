@@ -14,7 +14,10 @@ type RangeLookup = { range: NASARangeType; data: TemperatureRangeData };
 // LINK: Source class to retrieve NASA polynomial data for components
 export class Source implements SourceType {
   // NOTE: Constructor
-  constructor(public readonly model_source: ModelSource, public readonly component_key: ComponentKey) { }
+  constructor(
+    public readonly model_source: ModelSource,
+    public readonly component_key: ComponentKey
+  ) { }
 
   // NOTE: Method to get data source for a component and property
   getDataSource(args: {
