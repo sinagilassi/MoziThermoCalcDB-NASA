@@ -476,6 +476,43 @@ export function H_mix_T(opts: {
 }
 
 /**
+ * SECTION: Mixture enthalpy over a temperature list
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperatures - Temperatures to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function H_mix_T_series(opts: {
+  components: Component[];
+  temperatures: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  MW_i?: Record<string, number>;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { components, temperatures, model_source, component_key, nasa_type, basis, MW_i } = opts;
+
+  return temperatures.map((temperature) => ({
+    temperature,
+    result: H_mix_T({
+      components,
+      temperature,
+      model_source,
+      component_key,
+      nasa_type,
+      basis,
+      MW_i
+    })
+  }));
+}
+
+/**
  * SECTION: Mixture entropy at given temperature
  * @param opts - Options object
  * @param opts.components - Components with mole fractions
@@ -527,6 +564,55 @@ export function S_mix_T(opts: {
 
   const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
   return mixture.calculateMixtureEntropy(S_i_IG, MW, basis, pressure_Pa);
+}
+
+/**
+ * SECTION: Mixture entropy over a temperature list
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperatures - Temperatures to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function S_mix_T_series(opts: {
+  components: Component[];
+  temperatures: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const {
+    components,
+    temperatures,
+    model_source,
+    component_key,
+    nasa_type,
+    basis,
+    pressure_Pa,
+    MW_i
+  } = opts;
+
+  return temperatures.map((temperature) => ({
+    temperature,
+    result: S_mix_T({
+      components,
+      temperature,
+      model_source,
+      component_key,
+      nasa_type,
+      basis,
+      pressure_Pa,
+      MW_i
+    })
+  }));
 }
 
 /**
@@ -584,6 +670,55 @@ export function G_mix_T(opts: {
 }
 
 /**
+ * SECTION: Mixture Gibbs free energy over a temperature list
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperatures - Temperatures to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function G_mix_T_series(opts: {
+  components: Component[];
+  temperatures: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const {
+    components,
+    temperatures,
+    model_source,
+    component_key,
+    nasa_type,
+    basis,
+    pressure_Pa,
+    MW_i
+  } = opts;
+
+  return temperatures.map((temperature) => ({
+    temperature,
+    result: G_mix_T({
+      components,
+      temperature,
+      model_source,
+      component_key,
+      nasa_type,
+      basis,
+      pressure_Pa,
+      MW_i
+    })
+  }));
+}
+
+/**
  * SECTION: Mixture heat capacity at given temperature
  * @param opts - Options object
  * @param opts.components - Components with mole fractions
@@ -632,6 +767,43 @@ export function Cp_mix_T(opts: {
 
   const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
   return mixture.calculateMixtureHeatCapacity(Cp_i_IG, MW, basis);
+}
+
+/**
+ * SECTION: Mixture heat capacity over a temperature list
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperatures - Temperatures to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns Array<{ temperature: Temperature; result: CustomProp | null }>
+ */
+export function Cp_mix_T_series(opts: {
+  components: Component[];
+  temperatures: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  MW_i?: Record<string, number>;
+}): Array<{ temperature: Temperature; result: CustomProp | null }> {
+  const { components, temperatures, model_source, component_key, nasa_type, basis, MW_i } = opts;
+
+  return temperatures.map((temperature) => ({
+    temperature,
+    result: Cp_mix_T({
+      components,
+      temperature,
+      model_source,
+      component_key,
+      nasa_type,
+      basis,
+      MW_i
+    })
+  }));
 }
 
 /**
@@ -686,6 +858,112 @@ export function chemical_potential_mix_T(opts: {
 
   const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
   return mixture.calculateChemicalPotential(G_i_IG, MW, basis, temperature, pressure_Pa);
+}
+
+/**
+ * SECTION: Chemical potential over a temperature list
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperatures - Temperatures to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ * @returns Array<{ temperature: Temperature; result: Record<string, CustomProp> | null }>
+ */
+export function chemical_potential_mix_T_series(opts: {
+  components: Component[];
+  temperatures: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): Array<{ temperature: Temperature; result: Record<string, CustomProp> | null }> {
+  const {
+    components,
+    temperatures,
+    model_source,
+    component_key,
+    nasa_type,
+    basis,
+    pressure_Pa,
+    MW_i
+  } = opts;
+
+  return temperatures.map((temperature) => ({
+    temperature,
+    result: chemical_potential_mix_T({
+      components,
+      temperature,
+      model_source,
+      component_key,
+      nasa_type,
+      basis,
+      pressure_Pa,
+      MW_i
+    })
+  }));
+}
+
+/**
+ * SECTION: All mixture properties over a temperature list
+ * @param opts - Options object
+ * @param opts.components - Components with mole fractions
+ * @param opts.temperatures - Temperatures to evaluate
+ * @param opts.model_source - NASA model source data
+ * @param opts.component_key - Component identifier key (default: 'Name-Formula')
+ * @param opts.nasa_type - NASA data type to use, 'nasa7' or 'nasa9' (default: 'nasa9')
+ * @param opts.basis - Calculation basis, 'mole' or 'mass' (default: 'mole')
+ * @param opts.pressure_Pa - Mixture pressure in Pa (default: 101325)
+ * @param opts.MW_i - Optional molecular weights keyed by component name
+ */
+export function mixture_properties_T_series(opts: {
+  components: Component[];
+  temperatures: Temperature[];
+  model_source: ModelSource;
+  component_key?: ComponentKey;
+  nasa_type?: NASAType;
+  basis?: 'mole' | 'mass';
+  pressure_Pa?: number;
+  MW_i?: Record<string, number>;
+}): Array<{
+  temperature: Temperature;
+  result: {
+    enthalpy: CustomProp | null;
+    entropy: CustomProp | null;
+    gibbsEnergy: CustomProp | null;
+    heatCapacity: CustomProp | null;
+    chemicalPotential: Record<string, CustomProp> | null;
+  };
+}> {
+  const {
+    components,
+    temperatures,
+    model_source,
+    component_key,
+    nasa_type,
+    basis,
+    pressure_Pa,
+    MW_i
+  } = opts;
+
+  return temperatures.map((temperature) => ({
+    temperature,
+    result: mixture_properties_T({
+      components,
+      temperature,
+      model_source,
+      component_key,
+      nasa_type,
+      basis,
+      pressure_Pa,
+      MW_i
+    })
+  }));
 }
 
 /**
