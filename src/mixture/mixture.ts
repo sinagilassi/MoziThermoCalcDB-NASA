@@ -95,6 +95,14 @@ export class MIXTURE {
     }
 
     // SECTION: Calculate mixture properties
+    /**
+     * Calculates the enthalpy of the mixture based on ideal gas properties of the components and their mole fractions.
+     * The formula used is: H_mix = sum(y_i * H_i)
+     * @param H_i_IG - ideal gas enthalpy of each component, keyed by componentKey
+     * @param MW_i - molecular weight of each component, keyed by componentKey
+     * @param basis - whether to return the result on a 'mole' or 'mass' basis (default is 'mole')
+     * @returns the enthalpy of the mixture as a CustomProp, or null if there was an error (e.g., missing data)
+     */
     calculateMixtureEnthalpy(
         H_i_IG: Record<string, CustomProp>,
         MW_i: Record<string, number>,
@@ -130,6 +138,16 @@ export class MIXTURE {
         }
     }
 
+    // SECTION: Calculate mixture entropy
+    /**
+     * Calculates the entropy of the mixture based on ideal gas properties of the components, their mole fractions, and the mixing entropy.
+     * The formula used is: S_mix = sum(y_i * S_i) - R * sum(y_i * ln(y_i)) - R * ln(P/P_ref)
+     * @param S_i_IG - ideal gas entropy of each component, keyed by componentKey
+     * @param MW_i - molecular weight of each component, keyed by componentKey
+     * @param basis - whether to return the result on a 'mole' or 'mass' basis (default is 'mole')
+     * @param pressure_Pa - pressure in Pascals for the pressure correction term (default is standard pressure, 101325 Pa)
+     * @returns the entropy of the mixture as a CustomProp, or null if there was an error (e.g., missing data)
+     */
     calculateMixtureEntropy(
         S_i_IG: Record<string, CustomProp>,
         MW_i: Record<string, number>,
@@ -176,6 +194,15 @@ export class MIXTURE {
         }
     }
 
+    // SECTION: Calculate mixture heat capacity
+    /**
+     * Calculates the heat capacity of the mixture based on ideal gas properties of the components and their mole fractions.
+     * The formula used is: Cp_mix = sum(y_i * Cp_i)
+     * @param Cp_i_IG - ideal gas heat capacity of each component, keyed by componentKey
+     * @param MW_i - molecular weight of each component, keyed by componentKey
+     * @param basis - whether to return the result on a 'mole' or 'mass' basis (default is 'mole')
+     * @returns the heat capacity of the mixture as a CustomProp, or null if there was an error (e.g., missing data)
+     */
     calculateMixtureHeatCapacity(
         Cp_i_IG: Record<string, CustomProp>,
         MW_i: Record<string, number>,
@@ -212,6 +239,16 @@ export class MIXTURE {
     }
 
     // SECTION: Calculate mixture Gibbs free energy
+    /**
+     * Calculates the Gibbs free energy of the mixture based on ideal gas properties of the components, their mole fractions, and the mixing entropy.
+     * The formula used is: G_mix = sum(y_i * G_i) + R * T * (sum(y_i * ln(y_i)) + ln(P/P_ref))
+     * @param G_i_IG - ideal gas Gibbs energy of each component, keyed by componentKey
+     * @param MW_i - molecular weight of each component, keyed by componentKey
+     * @param basis - whether to return the result on a 'mole' or 'mass' basis (default is 'mole')
+     * @param temperature - temperature for the calculation (default is standard temperature, 298.15 K)
+     * @param pressure_Pa - pressure in Pascals for the pressure correction term (default is standard pressure, 101325 Pa)
+     * @returns
+     */
     calculateMixtureGibbsEnergy(
         G_i_IG: Record<string, CustomProp>,
         MW_i: Record<string, number>,
@@ -259,6 +296,16 @@ export class MIXTURE {
     }
 
     // SECTION: Chemical potential calculations
+    /**
+     * Calculates the chemical potential of each component in the mixture based on ideal gas properties, mole fractions, and pressure.
+     * The formula used is: mu_i = G_i + RT ln(y_i) + RT ln(P/P_ref)
+     * @param G_i_IG - ideal gas Gibbs energy of each component, keyed by componentKey
+     * @param MW_i - molecular weight of each component, keyed by componentKey
+     * @param basis - whether to return the result on a 'mole' or 'mass' basis (default is 'mole')
+     * @param temperature - temperature for the calculation (default is standard temperature, 298.15 K)
+     * @param pressure_Pa - pressure in Pascals for the pressure correction term (default is standard pressure, 101325 Pa)
+     * @returns
+     */
     calculateChemicalPotential(
         G_i_IG: Record<string, CustomProp>,
         MW_i: Record<string, number>,
@@ -278,6 +325,7 @@ export class MIXTURE {
                     throw new Error(`Missing Gibbs energy for component '${component.name}'.`);
                 }
 
+                // SECTION: chemical potential calculation: mu_i = G_i + RT ln(y_i) + RT ln(P/P_ref)
                 const { value } = ensureEnergy(prop);
                 const lnY = y > 0 ? Math.log(y) : 0;
                 const mu_value = value + this.R * T * (lnY + lnP);
