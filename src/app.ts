@@ -445,6 +445,7 @@ export function H_mix_T(opts: {
   basis?: 'mole' | 'mass';
   MW_i?: Record<string, number>;
 }): CustomProp | null {
+  // NOTE: unpack options with defaults
   const {
     components,
     temperature,
@@ -455,6 +456,7 @@ export function H_mix_T(opts: {
     MW_i
   } = opts;
 
+  // NOTE: build mixture context and get component properties
   const { mixture, hsgs, source } = buildMixtureContext({
     components,
     model_source,
@@ -462,6 +464,8 @@ export function H_mix_T(opts: {
     nasa_type
   });
 
+  // SECTION: get ideal gas enthalpy for each component
+  // NOTE: component enthalpy
   const H_i_IG = buildComponentPropsByName({
     components,
     component_key,
@@ -471,7 +475,10 @@ export function H_mix_T(opts: {
   });
   if (!H_i_IG) return null;
 
+  // NOTE: molecular weights
   const MW = MW_i ?? buildMWByName({ components, component_key, source, nasa_type, temperature }) ?? {};
+
+  // NOTE: calculate mixture enthalpy
   return mixture.calculateMixtureEnthalpy(H_i_IG, MW, basis);
 }
 

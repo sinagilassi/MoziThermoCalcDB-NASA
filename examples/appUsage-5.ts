@@ -31,10 +31,10 @@ const logAndCapture = (...args: unknown[]) => {
 };
 
 // --- Components ---
-const hydrogen: Component = { name: 'dihydrogen', formula: 'H2', state: 'g' };
-const water: Component = { name: 'dihydrogen monoxide', formula: 'H2O', state: 'g' };
-const carbon_monoxide: Component = { name: 'carbon monoxide', formula: 'CO', state: 'g' };
-const carbon_dioxide: Component = { name: 'carbon dioxide', formula: 'CO2', state: 'g' };
+const hydrogen: Component = { name: 'dihydrogen', formula: 'H2', state: 'g', moleFraction: 0.25 };
+const water: Component = { name: 'dihydrogen monoxide', formula: 'H2O', state: 'g', moleFraction: 0.25 };
+const carbon_monoxide: Component = { name: 'carbon monoxide', formula: 'CO', state: 'g', moleFraction: 0.25 };
+const carbon_dioxide: Component = { name: 'carbon dioxide', formula: 'CO2', state: 'g', moleFraction: 0.25 };
 
 const components: Component[] = [hydrogen, water, carbon_dioxide, carbon_monoxide];
 
@@ -81,8 +81,6 @@ logAndCapture('S_mix over temperature series:', S_mix_series);
 logAndCapture('G_mix over temperature series:', G_mix_series);
 logAndCapture('Cp_mix over temperature series:', Cp_mix_series);
 logAndCapture('Chemical potential of each component over temperature series:', mu_mix_series);
-
-
 
 const outputFile = path.join(__dirname, 'appUsage-4-results.txt');
 await writeFile(outputFile, results.join('\n'), 'utf-8');
