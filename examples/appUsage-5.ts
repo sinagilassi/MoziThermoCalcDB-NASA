@@ -38,9 +38,12 @@ const carbon_dioxide: Component = { name: 'carbon dioxide', formula: 'CO2', stat
 
 const components: Component[] = [hydrogen, water, carbon_dioxide, carbon_monoxide];
 
+// NOTE: component key
+const componentKey = 'Name-Formula-State';
+
 // --- Model source ---
 const model_source = await loadExampleModelSource(__dirname);
-const component_model_source = await buildComponentModelSource(components, model_source);
+const component_model_source = await buildComponentModelSource(components, model_source, componentKey);
 
 // Mixture helper usage example
 
@@ -56,11 +59,11 @@ const T_series = [
 
 // --- Mixture properties at reference temperature ---
 logAndCapture('--- Mixture properties at reference temperature ---');
-const H_mix_ref = H_mix_T({ components, temperature: T_ref, model_source: component_model_source });
-const S_mix_ref = S_mix_T({ components, temperature: T_ref, model_source: component_model_source });
-const G_mix_ref = G_mix_T({ components, temperature: T_ref, model_source: component_model_source });
-const Cp_mix_ref = Cp_mix_T({ components, temperature: T_ref, model_source: component_model_source });
-const mu_mix_ref = chemical_potential_mix_T({ components, temperature: T_ref, model_source: component_model_source });
+const H_mix_ref = H_mix_T({ components, temperature: T_ref, model_source: component_model_source, component_key: componentKey });
+const S_mix_ref = S_mix_T({ components, temperature: T_ref, model_source: component_model_source, component_key: componentKey });
+const G_mix_ref = G_mix_T({ components, temperature: T_ref, model_source: component_model_source, component_key: componentKey });
+const Cp_mix_ref = Cp_mix_T({ components, temperature: T_ref, model_source: component_model_source, component_key: componentKey });
+const mu_mix_ref = chemical_potential_mix_T({ components, temperature: T_ref, model_source: component_model_source, component_key: componentKey });
 
 logAndCapture('H_mix at reference temperature:', H_mix_ref);
 logAndCapture('S_mix at reference temperature:', S_mix_ref);
@@ -70,11 +73,11 @@ logAndCapture('Chemical potential of each component at reference temperature:', 
 
 // --- Mixture properties over a series of temperatures ---
 logAndCapture('\n--- Mixture properties over a series of temperatures ---');
-const H_mix_series = H_mix_T_series({ components, temperatures: T_series, model_source: component_model_source });
-const S_mix_series = S_mix_T_series({ components, temperatures: T_series, model_source: component_model_source });
-const G_mix_series = G_mix_T_series({ components, temperatures: T_series, model_source: component_model_source });
-const Cp_mix_series = Cp_mix_T_series({ components, temperatures: T_series, model_source: component_model_source });
-const mu_mix_series = chemical_potential_mix_T_series({ components, temperatures: T_series, model_source: component_model_source });
+const H_mix_series = H_mix_T_series({ components, temperatures: T_series, model_source: component_model_source, component_key: componentKey });
+const S_mix_series = S_mix_T_series({ components, temperatures: T_series, model_source: component_model_source, component_key: componentKey });
+const G_mix_series = G_mix_T_series({ components, temperatures: T_series, model_source: component_model_source, component_key: componentKey });
+const Cp_mix_series = Cp_mix_T_series({ components, temperatures: T_series, model_source: component_model_source, component_key: componentKey });
+const mu_mix_series = chemical_potential_mix_T_series({ components, temperatures: T_series, model_source: component_model_source, component_key: componentKey });
 
 logAndCapture('H_mix over temperature series:', H_mix_series);
 logAndCapture('S_mix over temperature series:', S_mix_series);

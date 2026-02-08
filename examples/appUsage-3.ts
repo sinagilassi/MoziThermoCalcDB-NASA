@@ -55,6 +55,9 @@ const carbon_dioxide: Component = { name: 'carbon dioxide', formula: 'CO2', stat
 
 const components: Component[] = [hydrogen, oxygen, water, carbon_monoxide, carbon_dioxide];
 
+// NOTE: component key
+const componentKey = 'Name-Formula-State';
+
 // --- Model source ---
 const model_source = await loadExampleModelSource(__dirname);
 const component_model_source = await buildComponentModelSource(components, model_source);

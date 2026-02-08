@@ -28,9 +28,12 @@ const carbon_dioxide: Component = { name: 'carbon dioxide', formula: 'CO2', stat
 
 const components: Component[] = [hydrogen, water, carbon_dioxide, carbon_monoxide];
 
+// NOTE: component key
+const componentKey = 'Name-Formula-State';
+
 // --- Model source ---
 const model_source = await loadExampleModelSource(__dirname);
-const component_model_source = await buildComponentModelSource(components, model_source);
+const component_model_source = await buildComponentModelSource(components, model_source, componentKey);
 
 // --- Reaction (WGSR) ---
 const wgsr: Reaction = {
@@ -49,7 +52,8 @@ logAndCapture(
     reaction: wgsr,
     Keq_target: { value: 10, unit: 'dimensionless' },
     temperature_bounds: { low: T_ref, high: T_high },
-    model_source: component_model_source
+    model_source: component_model_source,
+    component_key: componentKey
   })
 );
 logAndCapture(
@@ -57,7 +61,8 @@ logAndCapture(
   equilibrium_temperature_K1({
     reaction: wgsr,
     temperature_bounds: { low: T_ref, high: T_high },
-    model_source: component_model_source
+    model_source: component_model_source,
+    component_key: componentKey
   })
 );
 
