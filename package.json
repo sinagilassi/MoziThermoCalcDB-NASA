@@ -1,6 +1,6 @@
 {
   "name": "mozithermocalcdb-nasa",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Thermodynamic calculations using NASA7/9 polynomials",
   "keywords": [
     "thermodynamics",
