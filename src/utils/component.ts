@@ -30,6 +30,6 @@ export function setComponentId(opts: { component: Component; componentKey: Compo
     case 'Formula-Name-State':
       return `${component.formula}-${component.name}-${component.state}`;
     default:
-      return `${component.name}-${component.formula}`;
+      throw new Error(`Unsupported ComponentKey: ${String(componentKey)}`);
   }
 }
