@@ -16,6 +16,8 @@ export type BasisType = 'molar' | 'mass';
  * - "Name-State": Uses component name and state to construct the property key
  * - "Formula-State": Uses component formula and state to construct the property key
  * - "Name-Formula": Uses component name and formula to construct the property key
+ * - "Name-Formula-State": Uses component name, formula, and state to construct the property key
+ * - "Formula-Name-State": Uses component formula, name, and state to construct the property key
  *
  * Components are constructed based on the ComponentKey type, not by name or formula alone.
  * This ensures properties are correctly matched to the corresponding component identifiers.
@@ -25,7 +27,7 @@ export type BasisType = 'molar' | 'mass';
  *
  * const myComponentKey: ComponentKey = 'Formula-State';
  */
-export type ComponentKey = 'Name-State' | 'Formula-State' | 'Name-Formula';
+export type ComponentKey = 'Name-State' | 'Formula-State' | 'Name-Formula' | 'Name-Formula-State' | 'Formula-Name-State';
 export type StateType = 'g' | 'l' | 's' | 'cr';
 
 // Universal constants (placeholders; update when data available)

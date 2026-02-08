@@ -127,7 +127,7 @@ export class DataLoader {
 
     private generateKeys(data: NASA9TemperatureRangeData): string[] {
         const component = buildComponent(data);
-        const keys: ComponentKey[] = ['Name-State', 'Formula-State', 'Name-Formula'];
+        const keys: ComponentKey[] = ['Name-State', 'Formula-State', 'Name-Formula', 'Name-Formula-State', 'Formula-Name-State'];
         return keys.map((componentKey) => setComponentId({ component, componentKey }));
     }
 }

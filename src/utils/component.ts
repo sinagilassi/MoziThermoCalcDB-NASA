@@ -24,7 +24,12 @@ export function setComponentId(opts: { component: Component; componentKey: Compo
     case 'Formula-State':
       return `${component.formula}-${component.state}`;
     case 'Name-State':
-    default:
       return `${component.name}-${component.state}`;
+    case 'Name-Formula-State':
+      return `${component.name}-${component.formula}-${component.state}`;
+    case 'Formula-Name-State':
+      return `${component.formula}-${component.name}-${component.state}`;
+    default:
+      return `${component.name}-${component.formula}`;
   }
 }
