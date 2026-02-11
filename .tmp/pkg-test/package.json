@@ -11,6 +11,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "mozithermocalcdb-nasa": "file:../../mozithermocalcdb-nasa-0.2.0.tgz"
+    "mozithermocalcdb-nasa": "file:../../mozithermocalcdb-nasa-0.3.2.tgz"
   }
 }
